@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxtjs/tailwindcss',
     'nuxt-echarts',
+    '@nuxtjs/turnstile',
   ],
 
   runtimeConfig: {
@@ -22,6 +23,10 @@ export default defineNuxtConfig({
       supabaseUrl: process.env.SUPABASE_URL || '',
       supabaseKey: process.env.SUPABASE_ANON_KEY || '',
     },
+  },
+
+  turnstile: {
+    siteKey: process.env.TURNSTILE_SITE_KEY || '',
   },
 
   echarts: {

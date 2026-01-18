@@ -39,7 +39,7 @@ export function useAuth() {
   }
 
   // Sign in with email and password
-  async function signIn(email: string, password: string) {
+  async function signIn(email: string, password: string, captchaToken?: string) {
     try {
       loading.value = true
       error.value = null
@@ -47,6 +47,7 @@ export function useAuth() {
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
+        options: captchaToken ? { captchaToken } : undefined,
       })
 
       if (signInError) throw signInError
@@ -62,7 +63,7 @@ export function useAuth() {
   }
 
   // Sign up with email and password
-  async function signUp(email: string, password: string) {
+  async function signUp(email: string, password: string, captchaToken?: string) {
     try {
       loading.value = true
       error.value = null
@@ -70,6 +71,7 @@ export function useAuth() {
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
+        options: captchaToken ? { captchaToken } : undefined,
       })
 
       if (signUpError) throw signUpError

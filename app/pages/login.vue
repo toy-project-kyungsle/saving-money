@@ -14,12 +14,22 @@ const form = reactive({
 })
 
 const formError = ref('')
+const captchaToken = ref('')
+
+function onCaptchaVerify(token: string) {
+  captchaToken.value = token
+}
 
 async function handleSubmit() {
   formError.value = ''
 
   if (!form.email || !form.password) {
     formError.value = '이메일과 비밀번호를 입력해주세요'
+    return
+  }
+
+  if (!captchaToken.value) {
+    formError.value = '캡차 인증을 완료해주세요'
     return
   }
 
@@ -34,14 +44,14 @@ async function handleSubmit() {
       return
     }
 
-    const result = await signUp(form.email, form.password)
+    const result = await signUp(form.email, form.password, captchaToken.value)
     if (result.success) {
       navigateTo('/')
     } else {
       formError.value = result.error?.message || '회원가입에 실패했습니다'
     }
   } else {
-    const result = await signIn(form.email, form.password)
+    const result = await signIn(form.email, form.password, captchaToken.value)
     if (result.success) {
       navigateTo('/')
     } else {
@@ -54,6 +64,7 @@ function toggleMode() {
   isSignUp.value = !isSignUp.value
   formError.value = ''
   form.confirmPassword = ''
+  captchaToken.value = ''
 }
 </script>
 
@@ -88,6 +99,8 @@ function toggleMode() {
         placeholder="••••••••"
         required
       />
+
+      <NuxtTurnstile v-model="captchaToken" />
 
       <p v-if="formError" class="text-sm text-red-500">
         {{ formError }}
