@@ -27,7 +27,6 @@ export default defineNuxtConfig({
 
   turnstile: {
     siteKey: process.env.TURNSTILE_SITE_KEY || '',
-    secretKey: process.env.TURNSTILE_SECRET_KEY || '',
   },
 
   echarts: {
