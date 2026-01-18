@@ -100,7 +100,7 @@ function toggleMode() {
         required
       />
 
-      <NuxtTurnstile v-model="captchaToken" />
+      <NuxtTurnstile :key="isSignUp ? 'signup' : 'signin'" v-model="captchaToken" />
 
       <p v-if="formError" class="text-sm text-red-500">
         {{ formError }}

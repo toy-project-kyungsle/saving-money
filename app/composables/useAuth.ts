@@ -76,6 +76,17 @@ export function useAuth() {
 
       if (signUpError) throw signUpError
 
+      // Supabase는 이미 존재하는 이메일로 signUp 시 에러를 던지지 않음
+      // 대신 user.identities가 빈 배열로 반환됨
+      if (data.user && data.user.identities && data.user.identities.length === 0) {
+        throw new Error('이미 가입된 이메일입니다')
+      }
+
+      // 세션이 없으면 실제 로그인된 상태가 아님
+      if (!data.session) {
+        throw new Error('회원가입에 실패했습니다. 다시 시도해주세요.')
+      }
+
       user.value = transformUser(data.user)
       return { success: true }
     } catch (err) {
