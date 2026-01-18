@@ -1,20 +1,20 @@
 import type { PortfolioAllocation, PortfolioSummary } from "~/types";
 
 export function usePortfolio() {
-	const { categories } = useCategories();
-	const { savings } = useSavings();
+	const { investmentCategories } = useCategories();
+	const { investmentTypeSavings } = useSavings();
 
-	// Computed: Total assets (savings + investment)
+	// Computed: Total investment assets (투자 타입만, 저축 제외)
 	const totalAssets = computed(() =>
-		savings.value.reduce((sum, s) => sum + s.amount, 0),
+		investmentTypeSavings.value.reduce((sum, s) => sum + s.amount, 0),
 	);
 
-	// Computed: Portfolio allocations with current vs target comparison
+	// Computed: Portfolio allocations with current vs target comparison (투자 카테고리만)
 	const allocations = computed<PortfolioAllocation[]>(() => {
 		const total = totalAssets.value;
 
-		return categories.value.map((category) => {
-			const categoryAmount = savings.value
+		return investmentCategories.value.map((category) => {
+			const categoryAmount = investmentTypeSavings.value
 				.filter((s) => s.category_id === category.id)
 				.reduce((sum, s) => sum + s.amount, 0);
 
@@ -40,7 +40,7 @@ export function usePortfolio() {
 
 	// Computed: Target percent total (should be 100%)
 	const totalTargetPercent = computed(() =>
-		categories.value.reduce((sum, c) => sum + c.target_percent, 0),
+		investmentCategories.value.reduce((sum, c) => sum + c.target_percent, 0),
 	);
 
 	// Computed: Allocations sorted by difference (most underweight first)
@@ -64,7 +64,7 @@ export function usePortfolio() {
 	): { categoryId: number; name: string; amount: number }[] {
 		const newTotal = totalAssets.value + additionalInvestment;
 
-		return categories.value.map((category) => {
+		return investmentCategories.value.map((category) => {
 			const currentAmount =
 				allocations.value.find((a) => a.category.id === category.id)
 					?.currentAmount || 0;
