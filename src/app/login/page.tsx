@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { useAuth } from "@/contexts/AuthContext";
@@ -21,12 +21,20 @@ export default function LoginPage() {
 	const [formError, setFormError] = useState("");
 	const [captchaToken, setCaptchaToken] = useState("");
 
-	// Redirect if already authenticated
+	// Redirect if already authenticated at page load time only
+	// (signIn/signUp 완료 후 onAuthStateChange로 인한 중복 리다이렉트 방지)
+	const checkedInitialAuth = useRef(false);
 	useEffect(() => {
-		if (initialized && isAuthenticated) {
-			router.push("/");
+		if (initialized && !checkedInitialAuth.current) {
+			checkedInitialAuth.current = true;
+			if (isAuthenticated) {
+				router.push("/");
+			}
 		}
 	}, [initialized, isAuthenticated, router]);
+
+	const turnstileSiteKey =
+		process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "";
 
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault();
@@ -37,7 +45,7 @@ export default function LoginPage() {
 			return;
 		}
 
-		if (!captchaToken) {
+		if (turnstileSiteKey && !captchaToken) {
 			setFormError("캡차 인증을 완료해주세요");
 			return;
 		}
@@ -53,7 +61,7 @@ export default function LoginPage() {
 				return;
 			}
 
-			const result = await signUp(email, password, captchaToken);
+			const result = await signUp(email, password, captchaToken || undefined);
 			if (result.success) {
 				router.push("/");
 			} else {
@@ -62,7 +70,7 @@ export default function LoginPage() {
 				);
 			}
 		} else {
-			const result = await signIn(email, password, captchaToken);
+			const result = await signIn(email, password, captchaToken || undefined);
 			if (result.success) {
 				router.push("/");
 			} else {
@@ -96,9 +104,6 @@ export default function LoginPage() {
 	if (isAuthenticated) {
 		return null;
 	}
-
-	const turnstileSiteKey =
-		process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "";
 
 	return (
 		<AuthLayout>
@@ -142,6 +147,8 @@ export default function LoginPage() {
 							key={isSignUp ? "signup" : "signin"}
 							siteKey={turnstileSiteKey}
 							onSuccess={(token) => setCaptchaToken(token)}
+							onExpire={() => setCaptchaToken("")}
+							onError={() => setCaptchaToken("")}
 						/>
 					)}
 
