@@ -73,37 +73,21 @@ export default function DashboardPage() {
 		}
 	}, [initialized, isAuthenticated, router]);
 
-	// Fetch data on mount
+	// Fetch data on mount — sequential flow matching original Vue onMounted
 	const [dataLoaded, setDataLoaded] = useState(false);
 	useEffect(() => {
 		if (!isAuthenticated || dataLoaded) return;
 
 		async function loadData() {
-			await fetchCategories();
-		}
-		loadData();
-	}, [isAuthenticated, dataLoaded, fetchCategories]);
-
-	// Initialize default categories if none exist, then fetch savings
-	useEffect(() => {
-		if (!isAuthenticated || categoriesLoading) return;
-
-		async function initAndFetch() {
-			if (categories.length === 0 && !dataLoaded) {
+			const fetchedCategories = await fetchCategories();
+			if (fetchedCategories.length === 0) {
 				await initDefaultCategories();
 			}
 			await fetchSavings();
 			setDataLoaded(true);
 		}
-		initAndFetch();
-	}, [
-		isAuthenticated,
-		categories.length,
-		categoriesLoading,
-		dataLoaded,
-		initDefaultCategories,
-		fetchSavings,
-	]);
+		loadData();
+	}, [isAuthenticated, dataLoaded, fetchCategories, initDefaultCategories, fetchSavings]);
 
 	// Add saving
 	const handleAddSaving = useCallback(

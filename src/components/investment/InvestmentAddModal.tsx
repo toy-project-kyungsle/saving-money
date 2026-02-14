@@ -28,6 +28,7 @@ export default function InvestmentAddModal({
 	const [transactionDate, setTransactionDate] = useState(getToday());
 	const [description, setDescription] = useState("");
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
 		if (open) {
 			setCategoryId(categories[0]?.id || null);
@@ -35,7 +36,7 @@ export default function InvestmentAddModal({
 			setTransactionDate(getToday());
 			setDescription("");
 		}
-	}, [open, categories]);
+	}, [open]);
 
 	function handleSubmit(e: React.FormEvent) {
 		e.preventDefault();

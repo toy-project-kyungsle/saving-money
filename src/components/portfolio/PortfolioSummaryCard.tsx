@@ -1,3 +1,5 @@
+"use client";
+
 import { useMemo } from "react";
 import type { PortfolioSummary } from "@/types";
 import { formatCompact, formatKRW } from "@/lib/currency";

@@ -11,7 +11,7 @@ export function getSupabase(): SupabaseClient {
 
 		if (!supabaseUrl || !supabaseKey) {
 			console.warn(
-				"Supabase credentials not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY in .env",
+				"Supabase credentials not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env",
 			);
 		}
 

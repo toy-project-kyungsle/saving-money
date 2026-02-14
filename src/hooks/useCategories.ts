@@ -58,8 +58,8 @@ export function useCategories() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<Error | null>(null);
 
-	const fetchCategories = useCallback(async () => {
-		if (!user) return;
+	const fetchCategories = useCallback(async (): Promise<Category[]> => {
+		if (!user) return [];
 
 		try {
 			setLoading(true);
@@ -74,9 +74,12 @@ export function useCategories() {
 
 			if (fetchError) throw fetchError;
 
-			setCategories(data as Category[]);
+			const fetched = data as Category[];
+			setCategories(fetched);
+			return fetched;
 		} catch (err) {
 			setError(err as Error);
+			return [];
 		} finally {
 			setLoading(false);
 		}
