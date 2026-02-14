@@ -24,7 +24,7 @@ import {
   validateSavingInput,
   validateCategoryInput,
   escapeHtml,
-} from '../app/utils/validation'
+} from '../src/lib/validation'
 
 // Mock Supabase client
 const mockSupabase = {
@@ -320,9 +320,9 @@ describe('보안 테스트: XSS 방지 (escapeHtml)', () => {
     expect(escaped).toBe('&lt;&gt;&amp;&quot;&#039;')
   })
 
-  it('Vue는 기본적으로 텍스트를 이스케이프함 (v-text, {{ }})', () => {
-    const vueAutoEscapes = true
-    expect(vueAutoEscapes).toBe(true)
+  it('React는 기본적으로 텍스트를 이스케이프함 (JSX)', () => {
+    const reactAutoEscapes = true
+    expect(reactAutoEscapes).toBe(true)
   })
 })
 
