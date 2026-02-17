@@ -28,7 +28,11 @@ interface AuthContextValue {
 		email: string,
 		password: string,
 		captchaToken?: string,
-	) => Promise<{ success: boolean; error?: Error }>;
+	) => Promise<{
+		success: boolean;
+		error?: Error;
+		needsEmailVerification?: boolean;
+	}>;
 	signOut: () => Promise<{ success: boolean; error?: Error }>;
 }
 
@@ -139,11 +143,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 					throw new Error("이미 가입된 이메일입니다");
 				}
 
-				// 세션이 없으면 실제 로그인된 상태가 아님
+				// 세션이 없으면 이메일 인증이 필요한 상태
 				if (!data.session) {
-					throw new Error(
-						"회원가입에 실패했습니다. 다시 시도해주세요.",
-					);
+					return { success: true, needsEmailVerification: true };
 				}
 
 				setUser(transformUser(data.user));
