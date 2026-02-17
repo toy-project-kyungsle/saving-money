@@ -6,48 +6,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { getSupabase } from "@/lib/supabase";
 import { validateCategoryInput } from "@/lib/validation";
 
-// 기본 카테고리 시드 데이터
+// 기본 카테고리 시드 데이터 (저축용만 제공)
 const DEFAULT_CATEGORIES: Omit<CategoryInput, "sort_order">[] = [
-	// 저축용
 	{ name: "월급", type: "savings", color: "#4CAF50", target_percent: 0 },
 	{ name: "적금", type: "savings", color: "#2196F3", target_percent: 0 },
-	// 투자용
-	{
-		name: "Core",
-		type: "investment",
-		color: "#3B82F6",
-		target_percent: 30,
-	},
-	{
-		name: "AI 전력 인프라",
-		type: "investment",
-		color: "#10B981",
-		target_percent: 6,
-	},
-	{
-		name: "AI 소프트웨어",
-		type: "investment",
-		color: "#8B5CF6",
-		target_percent: 6,
-	},
-	{
-		name: "구조적 분산",
-		type: "investment",
-		color: "#F59E0B",
-		target_percent: 6,
-	},
-	{
-		name: "안전자산",
-		type: "investment",
-		color: "#6B7280",
-		target_percent: 6,
-	},
-	{
-		name: "도전",
-		type: "investment",
-		color: "#EF4444",
-		target_percent: 6,
-	},
 ];
 
 export function useCategories() {
