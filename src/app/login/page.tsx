@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { useAuth } from "@/contexts/AuthContext";
+import { validateEmail, validatePassword } from "@/lib/validation";
 import AuthLayout from "@/components/layout/AuthLayout";
 import BaseCard from "@/components/base/BaseCard";
 import BaseButton from "@/components/base/BaseButton";
@@ -21,6 +22,7 @@ export default function LoginPage() {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [formError, setFormError] = useState("");
+	const [formSuccess, setFormSuccess] = useState("");
 	const [captchaToken, setCaptchaToken] = useState("");
 	const turnstileRef = useRef<TurnstileInstance>(null);
 	const lastSignUpAttempt = useRef<number>(0);
@@ -43,9 +45,22 @@ export default function LoginPage() {
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault();
 		setFormError("");
+		setFormSuccess("");
 
 		if (!email || !password) {
 			setFormError("이메일과 비밀번호를 입력해주세요");
+			return;
+		}
+
+		const emailValidation = validateEmail(email);
+		if (!emailValidation.valid) {
+			setFormError(emailValidation.error!);
+			return;
+		}
+
+		const passwordValidation = validatePassword(password);
+		if (!passwordValidation.valid) {
+			setFormError(passwordValidation.error!);
 			return;
 		}
 
@@ -57,11 +72,6 @@ export default function LoginPage() {
 		if (isSignUp) {
 			if (password !== confirmPassword) {
 				setFormError("비밀번호가 일치하지 않습니다");
-				return;
-			}
-
-			if (password.length < 6) {
-				setFormError("비밀번호는 6자 이상이어야 합니다");
 				return;
 			}
 
@@ -78,12 +88,19 @@ export default function LoginPage() {
 			}
 			lastSignUpAttempt.current = now;
 
+
 			const result = await signUp(email, password, captchaToken || undefined);
 			// Reset captcha after each attempt to avoid timeout-or-duplicate errors
 			setCaptchaToken("");
 			turnstileRef.current?.reset();
 			if (result.success) {
-				router.push("/");
+				if (result.needsEmailVerification) {
+					setFormSuccess(
+						"회원가입이 완료되었습니다. 이메일을 확인하여 인증을 완료해주세요.",
+					);
+				} else {
+					router.push("/");
+				}
 			} else {
 				setFormError(
 					result.error?.message || "회원가입에 실패했습니다",
@@ -107,6 +124,7 @@ export default function LoginPage() {
 	function toggleMode() {
 		setIsSignUp(!isSignUp);
 		setFormError("");
+		setFormSuccess("");
 		setConfirmPassword("");
 		setCaptchaToken("");
 	}
@@ -179,6 +197,10 @@ export default function LoginPage() {
 
 					{formError && (
 						<p className="text-sm text-red-500">{formError}</p>
+					)}
+
+					{formSuccess && (
+						<p className="text-sm text-green-600">{formSuccess}</p>
 					)}
 
 					<BaseButton
