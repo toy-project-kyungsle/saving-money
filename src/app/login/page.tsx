@@ -9,6 +9,8 @@ import BaseCard from "@/components/base/BaseCard";
 import BaseButton from "@/components/base/BaseButton";
 import BaseInput from "@/components/base/BaseInput";
 
+const SIGNUP_COOLDOWN_MS = 60_000; // 60초
+
 export default function LoginPage() {
 	const router = useRouter();
 	const { isAuthenticated, initialized, signIn, signUp, loading } =
@@ -21,6 +23,7 @@ export default function LoginPage() {
 	const [formError, setFormError] = useState("");
 	const [captchaToken, setCaptchaToken] = useState("");
 	const turnstileRef = useRef<TurnstileInstance>(null);
+	const lastSignUpAttempt = useRef<number>(0);
 
 	// Redirect if already authenticated at page load time only
 	// (signIn/signUp 완료 후 onAuthStateChange로 인한 중복 리다이렉트 방지)
@@ -61,6 +64,19 @@ export default function LoginPage() {
 				setFormError("비밀번호는 6자 이상이어야 합니다");
 				return;
 			}
+
+			const now = Date.now();
+			const elapsed = now - lastSignUpAttempt.current;
+			if (lastSignUpAttempt.current > 0 && elapsed < SIGNUP_COOLDOWN_MS) {
+				const remaining = Math.ceil(
+					(SIGNUP_COOLDOWN_MS - elapsed) / 1000,
+				);
+				setFormError(
+					`이메일 전송 제한으로 ${remaining}초 후 다시 시도해주세요.`,
+				);
+				return;
+			}
+			lastSignUpAttempt.current = now;
 
 			const result = await signUp(email, password, captchaToken || undefined);
 			// Reset captcha after each attempt to avoid timeout-or-duplicate errors
