@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Category, CategoryInput } from "@/types";
+import type { Category, CategoryInput, CategoryType } from "@/types";
 import BaseModal from "@/components/base/BaseModal";
 import BaseButton from "@/components/base/BaseButton";
 import BaseInput from "@/components/base/BaseInput";
@@ -38,6 +38,7 @@ export default function CategoryManagerModal({
 	const title = isEditing ? "카테고리 수정" : "새 카테고리";
 
 	const [name, setName] = useState("");
+	const [type, setType] = useState<CategoryType>("investment");
 	const [targetPercent, setTargetPercent] = useState(0);
 	const [color, setColor] = useState("#6B7280");
 
@@ -45,10 +46,12 @@ export default function CategoryManagerModal({
 		if (open) {
 			if (category) {
 				setName(category.name);
+				setType(category.type);
 				setTargetPercent(category.target_percent);
 				setColor(category.color);
 			} else {
 				setName("");
+				setType("investment");
 				setTargetPercent(0);
 				setColor("#6B7280");
 			}
@@ -61,8 +64,8 @@ export default function CategoryManagerModal({
 
 		onSave({
 			name: name.trim(),
-			type: "investment",
-			target_percent: targetPercent,
+			type,
+			target_percent: type === "investment" ? targetPercent : 0,
 			color,
 		});
 	}
@@ -89,24 +92,57 @@ export default function CategoryManagerModal({
 					/>
 				</div>
 
-				{/* Target Percent */}
+				{/* Type */}
 				<div>
 					<label className="block text-sm font-medium text-gray-700 mb-1">
-						목표 비중 (%)
+						유형
 					</label>
-					<BaseInput
-						value={targetPercent}
-						onChange={(v) => setTargetPercent(Number(v))}
-						type="number"
-						min="0"
-						max="100"
-						step="0.1"
-						placeholder="0"
-					/>
-					<p className="text-xs text-gray-500 mt-1">
-						포트폴리오에서 이 카테고리가 차지해야 할 비중
-					</p>
+					<div className="flex gap-2">
+						<button
+							type="button"
+							className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium border transition-colors ${
+								type === "investment"
+									? "bg-blue-50 border-blue-300 text-blue-700"
+									: "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"
+							}`}
+							onClick={() => setType("investment")}
+						>
+							투자
+						</button>
+						<button
+							type="button"
+							className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium border transition-colors ${
+								type === "savings"
+									? "bg-green-50 border-green-300 text-green-700"
+									: "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"
+							}`}
+							onClick={() => setType("savings")}
+						>
+							저축
+						</button>
+					</div>
 				</div>
+
+				{/* Target Percent (investment only) */}
+				{type === "investment" && (
+					<div>
+						<label className="block text-sm font-medium text-gray-700 mb-1">
+							목표 비중 (%)
+						</label>
+						<BaseInput
+							value={targetPercent}
+							onChange={(v) => setTargetPercent(Number(v))}
+							type="number"
+							min="0"
+							max="100"
+							step="0.1"
+							placeholder="0"
+						/>
+						<p className="text-xs text-gray-500 mt-1">
+							포트폴리오에서 이 카테고리가 차지해야 할 비중
+						</p>
+					</div>
+				)}
 
 				{/* Color */}
 				<div>
