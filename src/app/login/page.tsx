@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { useAuth } from "@/contexts/AuthContext";
-import { validateEmail } from "@/lib/validation";
+import { validateEmail, validatePassword } from "@/lib/validation";
 import AuthLayout from "@/components/layout/AuthLayout";
 import BaseCard from "@/components/base/BaseCard";
 import BaseButton from "@/components/base/BaseButton";
@@ -55,6 +55,12 @@ export default function LoginPage() {
 			return;
 		}
 
+		const passwordValidation = validatePassword(password);
+		if (!passwordValidation.valid) {
+			setFormError(passwordValidation.error!);
+			return;
+		}
+
 		if (turnstileSiteKey && !captchaToken) {
 			setFormError("캡차 인증을 완료해주세요");
 			return;
@@ -63,11 +69,6 @@ export default function LoginPage() {
 		if (isSignUp) {
 			if (password !== confirmPassword) {
 				setFormError("비밀번호가 일치하지 않습니다");
-				return;
-			}
-
-			if (password.length < 6) {
-				setFormError("비밀번호는 6자 이상이어야 합니다");
 				return;
 			}
 
