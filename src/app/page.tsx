@@ -215,7 +215,7 @@ export default function DashboardPage() {
 							variant="secondary"
 							onClick={() => openCategoryModal()}
 						>
-							카테고리 관리
+							카테고리 추가
 						</BaseButton>
 						<BaseButton onClick={() => setShowAddModal(true)}>
 							+ 새 저축
