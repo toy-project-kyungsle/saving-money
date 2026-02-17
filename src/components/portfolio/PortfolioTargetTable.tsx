@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import type { Category, PortfolioAllocation } from "@/types";
 import BaseCard from "@/components/base/BaseCard";
 
@@ -14,6 +15,13 @@ export default function PortfolioTargetTable({
 	totalTargetPercent,
 	onEditCategory,
 }: PortfolioTargetTableProps) {
+	const sortedAllocations = useMemo(
+		() =>
+			[...allocations].sort(
+				(a, b) => b.targetPercent - a.targetPercent,
+			),
+		[allocations],
+	);
 	return (
 		<BaseCard className="space-y-4">
 			<div className="flex items-center justify-between">
@@ -44,7 +52,7 @@ export default function PortfolioTargetTable({
 						</tr>
 					</thead>
 					<tbody>
-						{allocations.map((allocation) => (
+						{sortedAllocations.map((allocation) => (
 							<tr
 								key={allocation.category.id}
 								className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
