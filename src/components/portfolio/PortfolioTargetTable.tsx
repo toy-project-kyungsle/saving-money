@@ -23,12 +23,12 @@ export default function PortfolioTargetTable({
 		[allocations],
 	);
 	return (
-		<BaseCard className="space-y-4">
+		<BaseCard className="space-y-5">
 			<div className="flex items-center justify-between">
-				<h2 className="text-lg font-semibold text-gray-900">
+				<h2 className="text-lg font-semibold text-secondary-900">
 					이상적 포트폴리오
 				</h2>
-				<span className="text-sm text-gray-500">
+				<span className="text-sm text-secondary-400">
 					목표 비중 합계: {totalTargetPercent}%
 				</span>
 			</div>
@@ -36,17 +36,17 @@ export default function PortfolioTargetTable({
 			<div className="overflow-x-auto">
 				<table className="w-full text-sm">
 					<thead>
-						<tr className="border-b border-gray-200">
-							<th className="text-left py-2 px-1 font-medium text-gray-600">
+						<tr className="border-b border-secondary-100">
+							<th className="text-left py-2.5 px-2 text-xs uppercase tracking-wider font-semibold text-secondary-500">
 								카테고리
 							</th>
-							<th className="text-right py-2 px-1 font-medium text-gray-600">
+							<th className="text-right py-2.5 px-2 text-xs uppercase tracking-wider font-semibold text-secondary-500">
 								목표 비중
 							</th>
-							<th className="text-right py-2 px-1 font-medium text-gray-600">
+							<th className="text-right py-2.5 px-2 text-xs uppercase tracking-wider font-semibold text-secondary-500">
 								현재 비중
 							</th>
-							<th className="text-right py-2 px-1 font-medium text-gray-600">
+							<th className="text-right py-2.5 px-2 text-xs uppercase tracking-wider font-semibold text-secondary-500">
 								차이
 							</th>
 						</tr>
@@ -55,44 +55,46 @@ export default function PortfolioTargetTable({
 						{sortedAllocations.map((allocation) => (
 							<tr
 								key={allocation.category.id}
-								className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
+								className="border-b border-secondary-100 hover:bg-surface-subtle transition-colors duration-200 cursor-pointer"
 								onClick={() =>
 									onEditCategory(allocation.category)
 								}
 							>
-								<td className="py-3 px-1">
-									<div className="flex items-center gap-2">
+								<td className="py-3.5 px-2">
+									<div className="flex items-center gap-2.5">
 										<div
-											className="w-3 h-3 rounded-full"
+											className="w-3 h-3 rounded-full flex-shrink-0"
 											style={{
 												backgroundColor:
 													allocation.category.color,
 											}}
+											aria-hidden="true"
 										/>
-										<span className="font-medium text-gray-900">
+										<span className="font-medium text-secondary-900">
 											{allocation.category.name}
 										</span>
 									</div>
 								</td>
-								<td className="py-3 px-1 text-right text-gray-600">
+								<td className="py-3.5 px-2 text-right text-secondary-600">
 									{allocation.targetPercent}%
 								</td>
-								<td className="py-3 px-1 text-right text-gray-900 font-medium">
+								<td className="py-3.5 px-2 text-right text-secondary-600">
 									{allocation.currentPercent.toFixed(1)}%
 								</td>
-								<td className="py-3 px-1 text-right">
-									<span
-										className={`font-medium ${
-											allocation.difference > 0
-												? "text-green-600"
-												: allocation.difference < 0
-													? "text-red-600"
-													: "text-gray-500"
-										}`}
-									>
-										{allocation.difference > 0 ? "+" : ""}
-										{allocation.difference.toFixed(1)}%p
-									</span>
+								<td className="py-3.5 px-2 text-right">
+									{allocation.difference > 0 ? (
+										<span className="inline-flex items-center text-success-600 bg-success-50 px-2 py-0.5 rounded-full text-xs font-medium">
+											+{allocation.difference.toFixed(1)}%p
+										</span>
+									) : allocation.difference < 0 ? (
+										<span className="inline-flex items-center text-error-600 bg-error-50 px-2 py-0.5 rounded-full text-xs font-medium">
+											{allocation.difference.toFixed(1)}%p
+										</span>
+									) : (
+										<span className="text-secondary-400 text-xs font-medium">
+											0.0%p
+										</span>
+									)}
 								</td>
 							</tr>
 						))}
@@ -100,7 +102,7 @@ export default function PortfolioTargetTable({
 				</table>
 			</div>
 
-			<p className="text-xs text-gray-400">
+			<p className="text-xs text-secondary-300">
 				카테고리를 클릭하여 수정할 수 있습니다
 			</p>
 		</BaseCard>

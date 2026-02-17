@@ -49,15 +49,21 @@ export default function SavingList({
 		<div className="space-y-4">
 			{/* Filter */}
 			{categories.length > 0 && (
-				<div className="flex gap-2 overflow-x-auto pb-2">
+				<div
+					className="flex gap-2 overflow-x-auto pb-2 scrollbar-hidden"
+					role="tablist"
+					aria-label="카테고리 필터"
+				>
 					{categoryFilterOptions.map((option) => (
 						<button
 							key={option.value}
 							type="button"
-							className={`px-4 py-1.5 text-sm font-medium rounded-full whitespace-nowrap transition-colors ${
+							role="tab"
+							aria-selected={selectedCategoryId === option.value}
+							className={`px-4 py-1.5 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200 ${
 								selectedCategoryId === option.value
-									? "bg-blue-600 text-white"
-									: "bg-gray-100 text-gray-700 hover:bg-gray-200"
+									? "bg-primary text-white shadow-sm"
+									: "bg-secondary-50 text-secondary-700 hover:bg-secondary-100"
 							}`}
 							onClick={() =>
 								setSelectedCategoryId(option.value)
@@ -71,7 +77,7 @@ export default function SavingList({
 
 			{/* Loading */}
 			{loading && (
-				<div className="py-8 text-center text-gray-500">
+				<div className="py-8 text-center" aria-busy="true">
 					<FeedbackLoading />
 				</div>
 			)}
@@ -86,7 +92,7 @@ export default function SavingList({
 
 			{/* List */}
 			{!loading && filteredSavings.length > 0 && (
-				<div className="space-y-2">
+				<div className="space-y-2.5">
 					{filteredSavings.map((saving) => (
 						<SavingListItem
 							key={saving.id}

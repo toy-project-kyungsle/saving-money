@@ -19,13 +19,14 @@ export default function FeedbackEmpty({
 	action,
 }: FeedbackEmptyProps) {
 	return (
-		<div className="flex flex-col items-center justify-center py-8 text-center">
-			<div className="flex items-center justify-center w-12 h-12 mb-4 bg-gray-100 rounded-full">
+		<div className="flex flex-col items-center justify-center py-10 text-center">
+			<div className="flex items-center justify-center w-14 h-14 mb-4 bg-secondary-50 rounded-full">
 				<svg
-					className="w-6 h-6 text-gray-400"
+					className="w-7 h-7 text-secondary-300"
 					fill="none"
 					stroke="currentColor"
 					viewBox="0 0 24 24"
+					aria-hidden="true"
 				>
 					<path
 						strokeLinecap="round"
@@ -35,9 +36,9 @@ export default function FeedbackEmpty({
 					/>
 				</svg>
 			</div>
-			<h3 className="text-lg font-medium text-gray-900 mb-1">{title}</h3>
+			<h3 className="text-lg font-semibold text-secondary-900 mb-1">{title}</h3>
 			{description && (
-				<p className="text-sm text-gray-500">{description}</p>
+				<p className="text-sm text-secondary-400">{description}</p>
 			)}
 			{action && <div className="mt-4">{action}</div>}
 		</div>

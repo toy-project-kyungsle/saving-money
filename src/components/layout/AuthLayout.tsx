@@ -4,15 +4,16 @@ interface AuthLayoutProps {
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
 	return (
-		<div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
+		<div className="min-h-screen bg-gradient-to-b from-primary-50/60 via-surface-subtle to-surface-subtle flex flex-col items-center justify-center px-4">
 			{/* Logo */}
-			<div className="mb-8 text-center">
-				<div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+			<div className="mb-10 text-center animate-fadeInUp">
+				<div className="w-18 h-18 bg-gradient-to-br from-primary to-primary-700 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg">
 					<svg
 						className="w-10 h-10 text-white"
 						fill="none"
 						stroke="currentColor"
 						viewBox="0 0 24 24"
+						aria-hidden="true"
 					>
 						<path
 							strokeLinecap="round"
@@ -22,12 +23,18 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
 						/>
 					</svg>
 				</div>
-				<h1 className="text-2xl font-bold text-gray-900">저축 관리</h1>
-				<p className="text-gray-500 mt-1">나의 자산을 한눈에</p>
+				<h1 className="text-2xl font-bold text-secondary-900 tracking-tight">
+					저축 관리
+				</h1>
+				<p className="text-secondary-500 mt-1.5 text-sm">
+					나의 자산을 한눈에
+				</p>
 			</div>
 
 			{/* Content */}
-			<div className="w-full max-w-md">{children}</div>
+			<div className="w-full max-w-sm animate-fadeInUp stagger-2">
+				{children}
+			</div>
 		</div>
 	);
 }

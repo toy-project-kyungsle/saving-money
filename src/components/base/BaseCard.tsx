@@ -22,7 +22,7 @@ export default function BaseCard({
 }: BaseCardProps) {
 	return (
 		<div
-			className={`bg-white rounded-xl border border-gray-200 ${paddingClasses[padding]} ${shadow ? "shadow-sm" : ""} ${hover ? "transition-shadow hover:shadow-md cursor-pointer" : ""} ${className}`}
+			className={`bg-surface-raised rounded-2xl border border-secondary-100 ${paddingClasses[padding]} ${shadow ? "shadow-card" : ""} ${hover ? "hover-lift cursor-pointer" : ""} ${className}`}
 		>
 			{children}
 		</div>
