@@ -34,6 +34,23 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+function getAuthErrorMessage(err: unknown): string {
+	const code =
+		(err as { code?: string }).code ||
+		(err as { message?: string }).message ||
+		"";
+	if (
+		code === "over_email_send_rate_limit" ||
+		code.includes("email rate limit")
+	) {
+		return "이메일 전송 횟수를 초과했습니다. 잠시 후 다시 시도해주세요.";
+	}
+	if (code === "user_already_exists") {
+		return "이미 가입된 이메일입니다.";
+	}
+	return (err as Error).message || "알 수 없는 오류가 발생했습니다.";
+}
+
 function transformUser(supabaseUser: SupabaseUser | null): User | null {
 	if (!supabaseUser) return null;
 	return {
@@ -149,8 +166,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				setUser(transformUser(data.user));
 				return { success: true };
 			} catch (err) {
-				setError(err as Error);
-				return { success: false, error: err as Error };
+				const friendlyError = new Error(getAuthErrorMessage(err));
+				setError(friendlyError);
+				return { success: false, error: friendlyError };
 			} finally {
 				setLoading(false);
 			}
