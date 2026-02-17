@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Turnstile } from "@marsidev/react-turnstile";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthLayout from "@/components/layout/AuthLayout";
 import BaseCard from "@/components/base/BaseCard";
@@ -20,6 +20,7 @@ export default function LoginPage() {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [formError, setFormError] = useState("");
 	const [captchaToken, setCaptchaToken] = useState("");
+	const turnstileRef = useRef<TurnstileInstance>(null);
 
 	// Redirect if already authenticated at page load time only
 	// (signIn/signUp 완료 후 onAuthStateChange로 인한 중복 리다이렉트 방지)
@@ -62,6 +63,9 @@ export default function LoginPage() {
 			}
 
 			const result = await signUp(email, password, captchaToken || undefined);
+			// Reset captcha after each attempt to avoid timeout-or-duplicate errors
+			setCaptchaToken("");
+			turnstileRef.current?.reset();
 			if (result.success) {
 				router.push("/");
 			} else {
@@ -71,6 +75,9 @@ export default function LoginPage() {
 			}
 		} else {
 			const result = await signIn(email, password, captchaToken || undefined);
+			// Reset captcha after each attempt to avoid timeout-or-duplicate errors
+			setCaptchaToken("");
+			turnstileRef.current?.reset();
 			if (result.success) {
 				router.push("/");
 			} else {
@@ -144,8 +151,10 @@ export default function LoginPage() {
 
 					{turnstileSiteKey && (
 						<Turnstile
+							ref={turnstileRef}
 							key={isSignUp ? "signup" : "signin"}
 							siteKey={turnstileSiteKey}
+							options={{ refreshExpired: "auto" }}
 							onSuccess={(token) => setCaptchaToken(token)}
 							onExpire={() => setCaptchaToken("")}
 							onError={() => setCaptchaToken("")}
