@@ -154,6 +154,7 @@ export default function LoginPage() {
 							ref={turnstileRef}
 							key={isSignUp ? "signup" : "signin"}
 							siteKey={turnstileSiteKey}
+							options={{ refreshExpired: "auto" }}
 							onSuccess={(token) => setCaptchaToken(token)}
 							onExpire={() => setCaptchaToken("")}
 							onError={() => setCaptchaToken("")}
