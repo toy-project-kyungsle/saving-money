@@ -1,3 +1,8 @@
+---
+name: design-system
+description: Design system tokens and component patterns for the saving-money Korean fintech app. Includes colors, typography, spacing, borders, shadows, animations, and reusable component code snippets.
+---
+
 # Design System - Saving Money
 
 This is the single source of truth for all design tokens and component patterns in this project.
