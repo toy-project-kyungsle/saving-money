@@ -99,8 +99,8 @@ export default function ChartMonthlyBar({
 				/>
 			) : (
 				<FeedbackEmpty
-					title="데이터가 없습니다"
-					description="저축을 추가하면 차트가 표시됩니다"
+					title="아직 데이터가 없어요"
+					description="저축을 추가하면 차트가 표시돼요"
 				/>
 			)}
 		</BaseCard>

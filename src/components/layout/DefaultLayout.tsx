@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import BaseModal from "@/components/base/BaseModal";
+import BaseButton from "@/components/base/BaseButton";
 
 interface DefaultLayoutProps {
 	children: React.ReactNode;
@@ -11,9 +14,11 @@ interface DefaultLayoutProps {
 export default function DefaultLayout({ children }: DefaultLayoutProps) {
 	const { user, isAuthenticated, signOut } = useAuth();
 	const router = useRouter();
+	const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
 	async function handleSignOut() {
 		await signOut();
+		setShowLogoutConfirm(false);
 		router.push("/login");
 	}
 
@@ -60,7 +65,7 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
 								<button
 									type="button"
 									className="text-sm font-medium text-secondary-500 hover:text-secondary-700 hover:bg-secondary-100 px-3 py-1.5 rounded-lg transition-interactive focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-400"
-									onClick={handleSignOut}
+									onClick={() => setShowLogoutConfirm(true)}
 								>
 									로그아웃
 								</button>
@@ -74,6 +79,36 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
 			<main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeInUp">
 				{children}
 			</main>
+
+			{/* Logout confirmation */}
+			<BaseModal
+				open={showLogoutConfirm}
+				onClose={() => setShowLogoutConfirm(false)}
+				title="로그아웃"
+				size="sm"
+			>
+				<div className="space-y-4">
+					<p className="text-secondary-600">
+						정말 로그아웃할까요?
+					</p>
+					<div className="flex gap-3">
+						<BaseButton
+							variant="secondary"
+							className="flex-1"
+							onClick={() => setShowLogoutConfirm(false)}
+						>
+							취소
+						</BaseButton>
+						<BaseButton
+							variant="danger"
+							className="flex-1"
+							onClick={handleSignOut}
+						>
+							로그아웃
+						</BaseButton>
+					</div>
+				</div>
+			</BaseModal>
 		</div>
 	);
 }

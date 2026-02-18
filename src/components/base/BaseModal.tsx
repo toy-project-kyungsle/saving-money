@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
 interface BaseModalProps {
@@ -26,10 +26,37 @@ export default function BaseModal({
 	children,
 	footer,
 }: BaseModalProps) {
+	const dialogRef = useRef<HTMLDivElement>(null);
+	const previousFocusRef = useRef<HTMLElement | null>(null);
+
 	const handleKeydown = useCallback(
 		(event: KeyboardEvent) => {
 			if (event.key === "Escape" && open) {
 				onClose();
+				return;
+			}
+
+			// Focus trap
+			if (event.key === "Tab" && open && dialogRef.current) {
+				const focusableElements = dialogRef.current.querySelectorAll<HTMLElement>(
+					'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+				);
+				const firstFocusable = focusableElements[0];
+				const lastFocusable = focusableElements[focusableElements.length - 1];
+
+				if (!firstFocusable) return;
+
+				if (event.shiftKey) {
+					if (document.activeElement === firstFocusable) {
+						event.preventDefault();
+						lastFocusable?.focus();
+					}
+				} else {
+					if (document.activeElement === lastFocusable) {
+						event.preventDefault();
+						firstFocusable?.focus();
+					}
+				}
 			}
 		},
 		[open, onClose],
@@ -41,6 +68,31 @@ export default function BaseModal({
 			document.removeEventListener("keydown", handleKeydown);
 		};
 	}, [handleKeydown]);
+
+	// Save and restore focus on open/close
+	useEffect(() => {
+		if (open) {
+			previousFocusRef.current = document.activeElement as HTMLElement;
+			// Focus the dialog on open after a small delay to let it render
+			requestAnimationFrame(() => {
+				if (dialogRef.current) {
+					const firstFocusable = dialogRef.current.querySelector<HTMLElement>(
+						'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+					);
+					firstFocusable?.focus();
+				}
+			});
+			// Prevent body scroll
+			document.body.style.overflow = "hidden";
+		} else {
+			document.body.style.overflow = "";
+			previousFocusRef.current?.focus();
+		}
+
+		return () => {
+			document.body.style.overflow = "";
+		};
+	}, [open]);
 
 	function handleBackdropClick(event: React.MouseEvent) {
 		if (event.target === event.currentTarget) {
@@ -54,8 +106,13 @@ export default function BaseModal({
 		<div
 			className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-secondary-900/70 backdrop-blur-sm supports-[backdrop-filter]:bg-secondary-900/60 animate-fadeIn"
 			onClick={handleBackdropClick}
+			role="presentation"
 		>
 			<div
+				ref={dialogRef}
+				role="dialog"
+				aria-modal="true"
+				aria-label={title || undefined}
 				className={`relative w-full bg-surface-raised rounded-2xl shadow-modal animate-slideUp ${sizeClasses[size]}`}
 			>
 				{/* Header */}

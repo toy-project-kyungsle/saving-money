@@ -71,7 +71,7 @@ export default function LoginPage() {
 
 		if (isSignUp) {
 			if (password !== confirmPassword) {
-				setFormError("비밀번호가 일치하지 않습니다");
+				setFormError("비밀번호가 일치하지 않아요");
 				return;
 			}
 
@@ -96,14 +96,14 @@ export default function LoginPage() {
 			if (result.success) {
 				if (result.needsEmailVerification) {
 					setFormSuccess(
-						"회원가입이 완료되었습니다. 이메일을 확인하여 인증을 완료해주세요.",
+						"회원가입이 완료되었어요. 이메일을 확인하여 인증을 완료해주세요.",
 					);
 				} else {
 					router.push("/");
 				}
 			} else {
 				setFormError(
-					result.error?.message || "회원가입에 실패했습니다",
+					result.error?.message || "회원가입에 실패했어요",
 				);
 			}
 		} else {
@@ -115,7 +115,7 @@ export default function LoginPage() {
 				router.push("/");
 			} else {
 				setFormError(
-					result.error?.message || "로그인에 실패했습니다",
+					result.error?.message || "로그인에 실패했어요",
 				);
 			}
 		}
@@ -161,16 +161,25 @@ export default function LoginPage() {
 						label="이메일"
 						placeholder="email@example.com"
 						required
+						autoComplete="email"
 					/>
 
-					<BaseInput
-						value={password}
-						onChange={(v) => setPassword(String(v))}
-						type="password"
-						label="비밀번호"
-						placeholder="••••••••"
-						required
-					/>
+					<div>
+						<BaseInput
+							value={password}
+							onChange={(v) => setPassword(String(v))}
+							type="password"
+							label="비밀번호"
+							placeholder="••••••••"
+							required
+							autoComplete={isSignUp ? "new-password" : "current-password"}
+						/>
+						{isSignUp && (
+							<p className="mt-1.5 text-xs text-secondary-400">
+								6자 이상으로 입력해주세요
+							</p>
+						)}
+					</div>
 
 					{isSignUp && (
 						<BaseInput

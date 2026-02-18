@@ -80,7 +80,7 @@ export default function PortfolioComparisonChart({
 			) : (
 				<div className="h-64 flex items-center justify-center">
 					<p className="text-gray-400 text-sm">
-						투자 데이터가 없습니다
+						아직 투자 데이터가 없어요
 					</p>
 				</div>
 			)}

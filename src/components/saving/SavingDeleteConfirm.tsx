@@ -65,7 +65,7 @@ export default function SavingDeleteConfirm({
 				</div>
 
 				<p className="text-secondary-600 mb-2">
-					다음 저축 내역을 삭제하시겠습니까?
+					이 저축 내역을 삭제할까요?
 				</p>
 
 				{saving && (
@@ -80,7 +80,7 @@ export default function SavingDeleteConfirm({
 				)}
 
 				<p className="text-secondary-400 text-sm">
-					이 작업은 되돌릴 수 없습니다.
+					삭제하면 되돌릴 수 없어요
 				</p>
 			</div>
 		</BaseModal>

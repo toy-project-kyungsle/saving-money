@@ -10,7 +10,7 @@ interface FeedbackErrorProps {
 }
 
 export default function FeedbackError({
-	title = "오류가 발생했습니다",
+	title = "오류가 발생했어요",
 	message,
 	retryable = true,
 	onRetry,

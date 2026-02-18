@@ -49,13 +49,16 @@ export default function PortfolioTargetTable({
 							<th className="text-right py-2.5 px-2 text-xs uppercase tracking-wider font-semibold text-secondary-500">
 								차이
 							</th>
+							<th className="w-10">
+								<span className="sr-only">수정</span>
+							</th>
 						</tr>
 					</thead>
 					<tbody>
 						{sortedAllocations.map((allocation) => (
 							<tr
 								key={allocation.category.id}
-								className="border-b border-secondary-100 hover:bg-surface-subtle transition-colors duration-200 cursor-pointer"
+								className="border-b border-secondary-100 hover:bg-surface-subtle transition-colors duration-200 cursor-pointer group"
 								onClick={() =>
 									onEditCategory(allocation.category)
 								}
@@ -96,6 +99,22 @@ export default function PortfolioTargetTable({
 										</span>
 									)}
 								</td>
+								<td className="py-3.5 px-1">
+									<svg
+										className="w-4 h-4 text-secondary-300 group-hover:text-secondary-500 transition-colors"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+										aria-hidden="true"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth="2"
+											d="M9 5l7 7-7 7"
+										/>
+									</svg>
+								</td>
 							</tr>
 						))}
 					</tbody>
@@ -103,7 +122,7 @@ export default function PortfolioTargetTable({
 			</div>
 
 			<p className="text-xs text-secondary-300">
-				카테고리를 클릭하여 수정할 수 있습니다
+				카테고리를 클릭하면 수정할 수 있어요
 			</p>
 		</BaseCard>
 	);

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ToastProvider } from "@/components/feedback/FeedbackToast";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,7 +19,9 @@ export default function RootLayout({
 	return (
 		<html lang="ko">
 			<body>
-				<AuthProvider>{children}</AuthProvider>
+				<AuthProvider>
+					<ToastProvider>{children}</ToastProvider>
+				</AuthProvider>
 			</body>
 		</html>
 	);

@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import type { CategorySummary } from "@/types";
 import { formatKRW } from "@/lib/currency";
 import BaseCard from "@/components/base/BaseCard";
+import BaseButton from "@/components/base/BaseButton";
 import FeedbackEmpty from "@/components/feedback/FeedbackEmpty";
 import dynamic from "next/dynamic";
 
@@ -14,11 +15,13 @@ const ReactECharts = dynamic(() => import("echarts-for-react"), {
 interface ChartCategoryPieProps {
 	data: CategorySummary[];
 	title?: string;
+	onAdd?: () => void;
 }
 
 export default function ChartCategoryPie({
 	data,
 	title = "카테고리별 비율",
+	onAdd,
 }: ChartCategoryPieProps) {
 	const activeData = useMemo(
 		() => data.filter((item) => item.total > 0),
@@ -88,8 +91,15 @@ export default function ChartCategoryPie({
 		return (
 			<BaseCard padding="lg">
 				<FeedbackEmpty
-					title="데이터가 없습니다"
-					description="저축을 추가하면 차트가 표시됩니다"
+					title="아직 데이터가 없어요"
+					description="저축을 추가하면 차트가 표시돼요"
+					action={
+						onAdd ? (
+							<BaseButton size="sm" onClick={onAdd}>
+								+ 새 저축 추가
+							</BaseButton>
+						) : undefined
+					}
 				/>
 			</BaseCard>
 		);
