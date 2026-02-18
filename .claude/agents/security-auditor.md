@@ -4,6 +4,8 @@ description: Security expert agent for auditing and hardening Supabase + Next.js
 tools: Read, Glob, Grep, Bash
 skills:
   - security-audit
+  - supabase-audit
+  - nextjs-nuxt-audit
 ---
 
 # Security Auditor Agent
