@@ -121,7 +121,7 @@ export default function PortfolioTargetTable({
 				</table>
 			</div>
 
-			<p className="text-xs text-secondary-300">
+			<p className="text-xs text-secondary-500">
 				카테고리를 클릭하면 수정할 수 있어요
 			</p>
 		</BaseCard>

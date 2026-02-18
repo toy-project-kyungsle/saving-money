@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { Category, Saving } from "@/types";
+import { formatMonthKR } from "@/lib/date";
 import BaseButton from "@/components/base/BaseButton";
 import FeedbackEmpty from "@/components/feedback/FeedbackEmpty";
 import FeedbackLoading from "@/components/feedback/FeedbackLoading";
@@ -14,6 +15,17 @@ interface SavingListProps {
 	onEdit: (saving: Saving) => void;
 	onDelete: (saving: Saving) => void;
 	onAdd?: () => void;
+}
+
+interface MonthGroup {
+	month: string;
+	label: string;
+	savings: Saving[];
+}
+
+function getMonth(dateStr: string): string {
+	const d = new Date(dateStr);
+	return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
 
 export default function SavingList({
@@ -54,6 +66,25 @@ export default function SavingList({
 		return categories.find((c) => c.id === selectedCategoryId)?.name || "";
 	}, [selectedCategoryId, categories]);
 
+	// Group filtered savings by month
+	const monthGroups = useMemo((): MonthGroup[] => {
+		const groups = new Map<string, Saving[]>();
+		for (const saving of filteredSavings) {
+			const month = getMonth(saving.transaction_date);
+			if (!groups.has(month)) {
+				groups.set(month, []);
+			}
+			groups.get(month)!.push(saving);
+		}
+		return Array.from(groups.entries())
+			.sort(([a], [b]) => b.localeCompare(a))
+			.map(([month, items]) => ({
+				month,
+				label: formatMonthKR(month),
+				savings: items,
+			}));
+	}, [filteredSavings]);
+
 	return (
 		<div className="space-y-4">
 			{/* Filter */}
@@ -69,7 +100,7 @@ export default function SavingList({
 							type="button"
 							role="tab"
 							aria-selected={selectedCategoryId === option.value}
-							className={`inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200 min-h-[44px] ${
+							className={`inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-full whitespace-nowrap transition-all duration-200 min-h-[44px] ${
 								selectedCategoryId === option.value
 									? "bg-primary text-white shadow-sm"
 									: "bg-secondary-50 text-secondary-700 hover:bg-secondary-100"
@@ -121,16 +152,30 @@ export default function SavingList({
 				/>
 			)}
 
-			{/* List */}
-			{!loading && filteredSavings.length > 0 && (
-				<div className="space-y-2.5">
-					{filteredSavings.map((saving) => (
-						<SavingListItem
-							key={saving.id}
-							saving={saving}
-							onEdit={onEdit}
-							onDelete={onDelete}
-						/>
+			{/* Grouped list by month */}
+			{!loading && monthGroups.length > 0 && (
+				<div className="space-y-6">
+					{monthGroups.map((group) => (
+						<div key={group.month}>
+							<div className="flex items-center justify-between mb-3">
+								<h3 className="text-sm font-semibold text-secondary-500">
+									{group.label}
+								</h3>
+								<span className="text-xs text-secondary-400 tabular-nums">
+									{group.savings.length}건
+								</span>
+							</div>
+							<div className="space-y-2">
+								{group.savings.map((saving) => (
+									<SavingListItem
+										key={saving.id}
+										saving={saving}
+										onEdit={onEdit}
+										onDelete={onDelete}
+									/>
+								))}
+							</div>
+						</div>
 					))}
 				</div>
 			)}
