@@ -65,10 +65,10 @@ export default function SavingForm({
 	}
 
 	return (
-		<form className="space-y-4" onSubmit={handleSubmit}>
+		<form className="space-y-5" onSubmit={handleSubmit}>
 			<div>
-				<label className="block text-sm font-medium text-gray-700 mb-1">
-					카테고리 <span className="text-red-500">*</span>
+				<label className="block text-sm font-medium text-secondary-700 mb-1.5">
+					카테고리 <span className="text-error-500">*</span>
 				</label>
 				<BaseSelect
 					value={categoryId}
@@ -85,15 +85,15 @@ export default function SavingForm({
 					))}
 				</BaseSelect>
 				{errors.category_id && (
-					<p className="text-sm text-red-600 mt-1">
+					<p className="text-sm text-error-600 mt-1.5">
 						{errors.category_id}
 					</p>
 				)}
 			</div>
 
 			<div>
-				<label className="block text-sm font-medium text-gray-700 mb-1">
-					금액 (원) <span className="text-red-500">*</span>
+				<label className="block text-sm font-medium text-secondary-700 mb-1.5">
+					금액 (원) <span className="text-error-500">*</span>
 				</label>
 				<BaseInput
 					value={amount}
@@ -103,14 +103,14 @@ export default function SavingForm({
 					required
 				/>
 				{errors.amount && (
-					<p className="text-sm text-red-600 mt-1">
+					<p className="text-sm text-error-600 mt-1.5">
 						{errors.amount}
 					</p>
 				)}
 			</div>
 
 			<div>
-				<label className="block text-sm font-medium text-gray-700 mb-1">
+				<label className="block text-sm font-medium text-secondary-700 mb-1.5">
 					날짜
 				</label>
 				<BaseInput
@@ -121,7 +121,7 @@ export default function SavingForm({
 			</div>
 
 			<div>
-				<label className="block text-sm font-medium text-gray-700 mb-1">
+				<label className="block text-sm font-medium text-secondary-700 mb-1.5">
 					메모
 				</label>
 				<BaseInput
@@ -132,7 +132,7 @@ export default function SavingForm({
 				/>
 			</div>
 
-			<div className="flex gap-3 pt-4">
+			<div className="flex gap-3 pt-6">
 				<BaseButton
 					type="button"
 					variant="secondary"

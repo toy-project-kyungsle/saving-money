@@ -78,10 +78,10 @@ export default function CategoryManagerModal({
 
 	return (
 		<BaseModal open={open} onClose={onClose} title={title}>
-			<form className="space-y-4" onSubmit={handleSubmit}>
+			<form className="space-y-5" onSubmit={handleSubmit}>
 				{/* Name */}
 				<div>
-					<label className="block text-sm font-medium text-gray-700 mb-1">
+					<label className="block text-sm font-medium text-secondary-700 mb-1.5">
 						카테고리 이름
 					</label>
 					<BaseInput
@@ -94,7 +94,7 @@ export default function CategoryManagerModal({
 
 				{/* Type */}
 				<div>
-					<label className="block text-sm font-medium text-gray-700 mb-1">
+					<label className="block text-sm font-medium text-secondary-700 mb-1.5">
 						유형
 					</label>
 					<div className="flex gap-2">
@@ -102,8 +102,8 @@ export default function CategoryManagerModal({
 							type="button"
 							className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium border transition-colors ${
 								type === "investment"
-									? "bg-blue-50 border-blue-300 text-blue-700"
-									: "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"
+									? "bg-primary-50 border-primary-200 text-primary-700"
+									: "bg-surface-raised border-secondary-200 text-secondary-500 hover:bg-surface-subtle"
 							}`}
 							onClick={() => setType("investment")}
 						>
@@ -113,8 +113,8 @@ export default function CategoryManagerModal({
 							type="button"
 							className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium border transition-colors ${
 								type === "savings"
-									? "bg-green-50 border-green-300 text-green-700"
-									: "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"
+									? "bg-success-50 border-success-200 text-success-700"
+									: "bg-surface-raised border-secondary-200 text-secondary-500 hover:bg-surface-subtle"
 							}`}
 							onClick={() => setType("savings")}
 						>
@@ -126,7 +126,7 @@ export default function CategoryManagerModal({
 				{/* Target Percent (investment only) */}
 				{type === "investment" && (
 					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-1">
+						<label className="block text-sm font-medium text-secondary-700 mb-1.5">
 							목표 비중 (%)
 						</label>
 						<BaseInput
@@ -138,7 +138,7 @@ export default function CategoryManagerModal({
 							step="0.1"
 							placeholder="0"
 						/>
-						<p className="text-xs text-gray-500 mt-1">
+						<p className="text-xs text-secondary-400 mt-1.5">
 							포트폴리오에서 이 카테고리가 차지해야 할 비중
 						</p>
 					</div>
@@ -146,7 +146,7 @@ export default function CategoryManagerModal({
 
 				{/* Color */}
 				<div>
-					<label className="block text-sm font-medium text-gray-700 mb-2">
+					<label className="block text-sm font-medium text-secondary-700 mb-2">
 						색상
 					</label>
 					<div className="flex flex-wrap gap-2">
@@ -156,13 +156,14 @@ export default function CategoryManagerModal({
 								type="button"
 								className={`w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 ${
 									color === presetColor
-										? "border-gray-900"
+										? "border-secondary-900 ring-2 ring-secondary-900/20"
 										: "border-transparent"
 								}`}
 								style={{
 									backgroundColor: presetColor,
 								}}
 								onClick={() => setColor(presetColor)}
+								aria-label={`색상 ${presetColor}`}
 							/>
 						))}
 						<input
@@ -170,12 +171,13 @@ export default function CategoryManagerModal({
 							value={color}
 							onChange={(e) => setColor(e.target.value)}
 							className="w-8 h-8 rounded-full cursor-pointer border-0"
+							aria-label="직접 색상 선택"
 						/>
 					</div>
 				</div>
 
 				{/* Actions */}
-				<div className="flex gap-2 pt-4">
+				<div className="flex gap-2 pt-6">
 					{isEditing && (
 						<BaseButton
 							type="button"

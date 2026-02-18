@@ -36,7 +36,7 @@ export default function InvestmentList({
 	}
 
 	return (
-		<div className="divide-y divide-gray-100">
+		<div className="divide-y divide-secondary-100">
 			{investments.map((investment) => (
 				<InvestmentListItem
 					key={investment.id}

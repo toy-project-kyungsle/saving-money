@@ -19,38 +19,44 @@ export default function SavingListItem({
 	const categoryColor = saving.category?.color || "#6B7280";
 
 	return (
-		<div className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg hover:shadow-sm transition-shadow">
-			<div className="flex items-center gap-4">
+		<div className="group flex items-center justify-between p-4 bg-surface-raised border border-secondary-100 rounded-xl hover:shadow-card transition-all duration-200">
+			<div className="flex items-center gap-3">
 				<div
-					className="w-3 h-3 rounded-full"
-					style={{ backgroundColor: categoryColor }}
-				/>
-				<div>
+					className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+					style={{ backgroundColor: `${categoryColor}26` }}
+				>
+					<div
+						className="w-3 h-3 rounded-full"
+						style={{ backgroundColor: categoryColor }}
+						aria-hidden="true"
+					/>
+				</div>
+				<div className="min-w-0">
 					<div className="flex items-center gap-2">
-						<span className="font-medium text-gray-900">
+						<span className="font-medium text-secondary-900">
 							{categoryName}
 						</span>
 						{saving.description && (
-							<span className="text-sm text-gray-500">
-								- {saving.description}
+							<span className="text-sm text-secondary-400 truncate">
+								{saving.description}
 							</span>
 						)}
 					</div>
-					<div className="text-sm text-gray-500">
+					<div className="text-xs text-secondary-400">
 						{formatDateKR(saving.transaction_date)}
 					</div>
 				</div>
 			</div>
 
-			<div className="flex items-center gap-4">
-				<span className="font-semibold text-gray-900">
+			<div className="flex items-center gap-3">
+				<span className="font-bold text-secondary-900 tabular-nums">
 					{formatKRW(saving.amount)}
 				</span>
 
-				<div className="flex gap-1">
+				<div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
 					<button
 						type="button"
-						className="p-1.5 text-gray-400 hover:text-blue-600 transition-colors"
+						className="p-1.5 text-secondary-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors duration-200"
 						aria-label="수정"
 						onClick={() => onEdit(saving)}
 					>
@@ -59,6 +65,7 @@ export default function SavingListItem({
 							fill="none"
 							stroke="currentColor"
 							viewBox="0 0 24 24"
+							aria-hidden="true"
 						>
 							<path
 								strokeLinecap="round"
@@ -70,7 +77,7 @@ export default function SavingListItem({
 					</button>
 					<button
 						type="button"
-						className="p-1.5 text-gray-400 hover:text-red-600 transition-colors"
+						className="p-1.5 text-secondary-400 hover:text-error-600 hover:bg-error-50 rounded-lg transition-colors duration-200"
 						aria-label="삭제"
 						onClick={() => onDelete(saving)}
 					>
@@ -79,6 +86,7 @@ export default function SavingListItem({
 							fill="none"
 							stroke="currentColor"
 							viewBox="0 0 24 24"
+							aria-hidden="true"
 						>
 							<path
 								strokeLinecap="round"

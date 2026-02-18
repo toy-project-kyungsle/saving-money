@@ -30,6 +30,7 @@ export default function BaseInput({
 	step,
 }: BaseInputProps) {
 	const inputId = useId();
+	const errorId = useId();
 
 	function handleInput(event: React.ChangeEvent<HTMLInputElement>) {
 		const val =
@@ -42,10 +43,10 @@ export default function BaseInput({
 			{label && (
 				<label
 					htmlFor={inputId}
-					className="block text-sm font-medium text-gray-700 mb-1"
+					className="block text-sm font-medium text-secondary-700 mb-1.5"
 				>
 					{label}
-					{required && <span className="text-red-500"> *</span>}
+					{required && <span className="text-error-500"> *</span>}
 				</label>
 			)}
 			<input
@@ -58,10 +59,16 @@ export default function BaseInput({
 				min={min}
 				max={max}
 				step={step}
-				className={`w-full px-4 py-2 border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${error ? "border-red-500 focus:ring-red-500" : "border-gray-300"}`}
+				aria-describedby={error ? errorId : undefined}
+				aria-invalid={error ? "true" : undefined}
+				className={`w-full px-4 py-2.5 border rounded-xl transition-interactive focus:outline-none focus:ring-2 focus:border-transparent focus:bg-surface disabled:bg-secondary-50 disabled:text-secondary-400 disabled:cursor-not-allowed ${error ? "border-error-500 focus:ring-error-500 bg-error-50/50" : "border-secondary-200 focus:ring-primary-400 hover:border-secondary-300"}`}
 				onChange={handleInput}
 			/>
-			{error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+			{error && (
+				<p id={errorId} className="mt-1.5 text-sm text-error-600">
+					{error}
+				</p>
+			)}
 		</div>
 	);
 }

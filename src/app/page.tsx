@@ -188,10 +188,10 @@ export default function DashboardPage() {
 	// Show loading if auth not initialized
 	if (!initialized) {
 		return (
-			<div className="min-h-screen bg-gray-50 flex items-center justify-center">
+			<div className="min-h-screen bg-surface-subtle flex items-center justify-center">
 				<div className="text-center">
-					<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
-					<p className="mt-2 text-gray-600">로딩 중...</p>
+					<div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
+					<p className="mt-3 text-sm text-secondary-600">로딩 중...</p>
 				</div>
 			</div>
 		);
@@ -204,20 +204,29 @@ export default function DashboardPage() {
 
 	return (
 		<DefaultLayout>
-			<div className="space-y-6">
+			<div className="space-y-8">
 				{/* Header */}
-				<div className="flex items-center justify-between">
-					<h1 className="text-2xl font-bold text-gray-900">
-						저축현황
-					</h1>
+				<div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+					<div>
+						<h1 className="text-2xl font-bold text-secondary-900 tracking-tight">
+							저축현황
+						</h1>
+						<p className="mt-1 text-sm text-secondary-400">
+							나의 자산을 한눈에 관리하세요
+						</p>
+					</div>
 					<div className="flex gap-2">
 						<BaseButton
 							variant="secondary"
+							size="sm"
 							onClick={() => openCategoryModal()}
 						>
 							카테고리 추가
 						</BaseButton>
-						<BaseButton onClick={() => setShowAddModal(true)}>
+						<BaseButton
+							size="sm"
+							onClick={() => setShowAddModal(true)}
+						>
 							+ 새 저축
 						</BaseButton>
 					</div>
@@ -240,7 +249,7 @@ export default function DashboardPage() {
 
 				{/* Main content */}
 				{!error && !(loading && savings.length === 0) && (
-					<>
+					<div className="space-y-8 animate-fadeInUp">
 						{/* Summary cards */}
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 							<SummaryTotal
@@ -250,30 +259,40 @@ export default function DashboardPage() {
 							<ChartCategoryPie data={categoryBreakdown} />
 						</div>
 
-						{/* Portfolio Target Table */}
-						<PortfolioTargetTable
-							allocations={portfolioSummary.allocations}
-							totalTargetPercent={totalTargetPercent}
-							onEditCategory={openCategoryModal}
-						/>
+						{/* Portfolio section */}
+						<section>
+							<h2 className="text-lg font-semibold text-secondary-900 mb-4">
+								포트폴리오
+							</h2>
+							<div className="space-y-4">
+								{/* Portfolio Target Table */}
+								<PortfolioTargetTable
+									allocations={portfolioSummary.allocations}
+									totalTargetPercent={totalTargetPercent}
+									onEditCategory={openCategoryModal}
+								/>
 
-						{/* Portfolio Summary Card (리밸런싱 제안) */}
-						<PortfolioSummaryCard summary={portfolioSummary} />
+								{/* Portfolio Summary Card (리밸런싱 제안) */}
+								<PortfolioSummaryCard summary={portfolioSummary} />
+							</div>
+						</section>
 
-						{/* Savings list */}
-						<BaseCard>
-							<h2 className="text-lg font-semibold text-gray-900 mb-4">
+						{/* Savings list section */}
+						<section>
+							<h2 className="text-lg font-semibold text-secondary-900 mb-4">
 								전체 내역
 							</h2>
-							<SavingList
-								savings={savings}
-								categories={categories}
-								loading={loading}
-								onEdit={openEditModal}
-								onDelete={openDeleteConfirm}
-							/>
-						</BaseCard>
-					</>
+							<BaseCard>
+								<SavingList
+									savings={savings}
+									categories={categories}
+									loading={loading}
+									onEdit={openEditModal}
+									onDelete={openDeleteConfirm}
+								/>
+							</BaseCard>
+						</section>
+					</div>
 				)}
 
 				{/* Modals */}

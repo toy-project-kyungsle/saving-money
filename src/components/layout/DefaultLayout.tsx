@@ -18,14 +18,17 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
 	}
 
 	return (
-		<div className="min-h-screen bg-gray-50">
+		<div className="min-h-screen bg-surface-subtle">
 			{/* Header */}
-			<header className="bg-white border-b border-gray-200">
-				<div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-					<div className="flex items-center justify-between h-16">
+			<header className="sticky top-0 z-40 bg-white backdrop-blur-lg supports-[backdrop-filter]:bg-white/80 border-b border-secondary-200/60 shadow-xs">
+				<div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+					<div className="flex items-center justify-between h-15">
 						{/* Logo */}
-						<Link href="/" className="flex items-center gap-2">
-							<div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+						<Link
+							href="/"
+							className="flex items-center gap-2.5 group"
+						>
+							<div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center shadow-sm transition-interactive group-hover:shadow-md group-hover:scale-105">
 								<svg
 									className="w-5 h-5 text-white"
 									width="20"
@@ -33,6 +36,7 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
 									fill="none"
 									stroke="currentColor"
 									viewBox="0 0 24 24"
+									aria-hidden="true"
 								>
 									<path
 										strokeLinecap="round"
@@ -42,20 +46,20 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
 									/>
 								</svg>
 							</div>
-							<span className="text-lg font-bold text-gray-900 hidden sm:block">
+							<span className="text-lg font-bold text-secondary-900 hidden sm:block tracking-tight">
 								저축 관리
 							</span>
 						</Link>
 
 						{/* User menu */}
 						{isAuthenticated && (
-							<div className="flex items-center gap-4">
-								<span className="text-sm text-gray-600 hidden sm:block">
+							<div className="flex items-center gap-3">
+								<span className="text-sm text-secondary-500 hidden sm:block">
 									{user?.email}
 								</span>
 								<button
 									type="button"
-									className="text-sm text-gray-500 hover:text-gray-700"
+									className="text-sm font-medium text-secondary-500 hover:text-secondary-700 hover:bg-secondary-100 px-3 py-1.5 rounded-lg transition-interactive focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-400"
 									onClick={handleSignOut}
 								>
 									로그아웃
@@ -67,7 +71,7 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
 			</header>
 
 			{/* Main content */}
-			<main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+			<main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeInUp">
 				{children}
 			</main>
 		</div>

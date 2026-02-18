@@ -132,10 +132,10 @@ export default function LoginPage() {
 	// Show loading while auth initializes
 	if (!initialized) {
 		return (
-			<div className="min-h-screen bg-gray-50 flex items-center justify-center">
-				<div className="text-center">
-					<div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
-					<p className="mt-2 text-gray-600">로딩 중...</p>
+			<div className="min-h-screen bg-surface-subtle flex items-center justify-center">
+				<div className="text-center" aria-busy="true">
+					<div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
+					<p className="mt-3 text-secondary-600 text-sm">로딩 중...</p>
 				</div>
 			</div>
 		);
@@ -148,8 +148,8 @@ export default function LoginPage() {
 
 	return (
 		<AuthLayout>
-			<BaseCard>
-				<h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">
+			<BaseCard padding="lg">
+				<h2 className="text-xl font-bold text-secondary-900 text-center mb-6">
 					{isSignUp ? "회원가입" : "로그인"}
 				</h2>
 
@@ -196,11 +196,21 @@ export default function LoginPage() {
 					)}
 
 					{formError && (
-						<p className="text-sm text-red-500">{formError}</p>
+						<div
+							className="bg-error-50 border border-error-200 text-error-700 rounded-xl p-3 text-sm"
+							role="alert"
+						>
+							{formError}
+						</div>
 					)}
 
 					{formSuccess && (
-						<p className="text-sm text-green-600">{formSuccess}</p>
+						<div
+							className="bg-success-50 border border-success-200 text-success-700 rounded-xl p-3 text-sm"
+							role="status"
+						>
+							{formSuccess}
+						</div>
 					)}
 
 					<BaseButton
@@ -212,16 +222,20 @@ export default function LoginPage() {
 					</BaseButton>
 				</form>
 
-				<div className="mt-6 text-center">
-					<button
-						type="button"
-						className="text-sm text-blue-600 hover:text-blue-800"
-						onClick={toggleMode}
-					>
+				{/* Divider */}
+				<div className="border-t border-secondary-200 mt-6 pt-5">
+					<p className="text-center text-sm text-secondary-500">
 						{isSignUp
-							? "이미 계정이 있으신가요? 로그인"
-							: "계정이 없으신가요? 회원가입"}
-					</button>
+							? "이미 계정이 있으신가요?"
+							: "계정이 없으신가요?"}{" "}
+						<button
+							type="button"
+							className="text-primary hover:text-primary-700 font-medium transition-colors duration-200"
+							onClick={toggleMode}
+						>
+							{isSignUp ? "로그인" : "회원가입"}
+						</button>
+					</p>
 				</div>
 			</BaseCard>
 		</AuthLayout>

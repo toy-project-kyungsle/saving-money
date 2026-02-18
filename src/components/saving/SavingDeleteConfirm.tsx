@@ -47,12 +47,13 @@ export default function SavingDeleteConfirm({
 			}
 		>
 			<div className="text-center">
-				<div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+				<div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-error-50 mb-4">
 					<svg
-						className="h-6 w-6 text-red-600"
+						className="h-6 w-6 text-error-600"
 						fill="none"
 						stroke="currentColor"
 						viewBox="0 0 24 24"
+						aria-hidden="true"
 					>
 						<path
 							strokeLinecap="round"
@@ -63,22 +64,22 @@ export default function SavingDeleteConfirm({
 					</svg>
 				</div>
 
-				<p className="text-gray-600 mb-2">
+				<p className="text-secondary-600 mb-2">
 					다음 저축 내역을 삭제하시겠습니까?
 				</p>
 
 				{saving && (
-					<div className="bg-gray-50 rounded-lg p-3 mb-4">
-						<p className="font-medium text-gray-900">
+					<div className="bg-surface-subtle rounded-xl p-3 mb-4">
+						<p className="text-secondary-900 font-medium">
 							{saving.category?.name || "알 수 없음"}
 						</p>
-						<p className="text-lg font-bold text-gray-900">
+						<p className="text-secondary-900 text-lg font-bold">
 							{formatKRW(saving.amount)}
 						</p>
 					</div>
 				)}
 
-				<p className="text-sm text-gray-500">
+				<p className="text-secondary-400 text-sm">
 					이 작업은 되돌릴 수 없습니다.
 				</p>
 			</div>

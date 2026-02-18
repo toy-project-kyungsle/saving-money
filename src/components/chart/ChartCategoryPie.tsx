@@ -20,71 +20,130 @@ export default function ChartCategoryPie({
 	data,
 	title = "카테고리별 비율",
 }: ChartCategoryPieProps) {
+	const activeData = useMemo(
+		() => data.filter((item) => item.total > 0),
+		[data],
+	);
+
+	const grandTotal = useMemo(
+		() => activeData.reduce((sum, item) => sum + item.total, 0),
+		[activeData],
+	);
+
 	const chartOption = useMemo(
 		() => ({
-			title: {
-				text: title,
-				left: "center",
-				textStyle: { fontSize: 16, fontWeight: 600 },
-			},
 			tooltip: {
 				trigger: "item",
+				backgroundColor: "rgba(255, 255, 255, 0.96)",
+				borderColor: "#E2E8F0",
+				borderWidth: 1,
+				textStyle: {
+					color: "#0F172A",
+					fontSize: 13,
+				},
+				padding: [10, 14],
 				formatter: (params: {
 					name: string;
 					value: number;
 					percent: number;
 				}) => {
-					return `${params.name}: ${formatKRW(params.value)} (${params.percent}%)`;
+					return `<span style="font-weight:600">${params.name}</span><br/>${formatKRW(params.value)} <span style="color:#94A3B8">(${params.percent}%)</span>`;
 				},
-			},
-			legend: {
-				orient: "horizontal" as const,
-				bottom: 0,
+				extraCssText: "border-radius: 10px; box-shadow: 0 4px 12px -2px rgba(0,0,0,0.08);",
 			},
 			series: [
 				{
 					type: "pie",
-					radius: ["40%", "70%"],
+					radius: ["45%", "72%"],
+					center: ["50%", "50%"],
 					avoidLabelOverlap: false,
 					itemStyle: {
-						borderRadius: 8,
+						borderRadius: 6,
 						borderColor: "#fff",
-						borderWidth: 2,
+						borderWidth: 3,
 					},
 					label: { show: false },
 					emphasis: {
-						label: {
-							show: true,
-							fontSize: 14,
-							fontWeight: "bold",
-						},
+						scale: true,
+						scaleSize: 6,
+						label: { show: false },
 					},
 					labelLine: { show: false },
-					data: data.map((item) => ({
+					data: activeData.map((item) => ({
 						value: item.total,
 						name: item.category.name,
 						itemStyle: { color: item.category.color },
 					})),
 				},
 			],
+			animation: true,
+			animationType: "scale",
+			animationEasing: "cubicOut",
+			animationDuration: 600,
 		}),
-		[data, title],
+		[activeData],
 	);
 
-	return (
-		<BaseCard padding="lg">
-			{data.length > 0 ? (
-				<ReactECharts
-					option={chartOption}
-					style={{ height: "320px" }}
-					opts={{ renderer: "canvas" }}
-				/>
-			) : (
+	if (activeData.length === 0) {
+		return (
+			<BaseCard padding="lg">
 				<FeedbackEmpty
 					title="데이터가 없습니다"
 					description="저축을 추가하면 차트가 표시됩니다"
 				/>
-			)}
+			</BaseCard>
+		);
+	}
+
+	return (
+		<BaseCard padding="lg" className="space-y-5">
+			{/* Section heading */}
+			<h2 className="text-lg font-semibold text-secondary-900">
+				{title}
+			</h2>
+
+			{/* Donut chart */}
+			<ReactECharts
+				option={chartOption}
+				style={{ height: "280px" }}
+				opts={{ renderer: "canvas" }}
+			/>
+
+			{/* Custom legend */}
+			<div
+				className="grid grid-cols-2 gap-x-4 gap-y-3 pt-1"
+				role="list"
+				aria-label="카테고리별 금액"
+			>
+				{activeData.map((item) => {
+					const percent =
+						grandTotal > 0
+							? ((item.total / grandTotal) * 100).toFixed(1)
+							: "0";
+
+					return (
+						<div
+							key={item.category.id}
+							className="flex items-center gap-2.5"
+							role="listitem"
+						>
+							<div
+								className="w-2.5 h-2.5 rounded-full shrink-0"
+								style={{
+									backgroundColor: item.category.color,
+								}}
+								aria-hidden="true"
+							/>
+							<span className="text-sm text-secondary-600 truncate">
+								{item.category.name}
+							</span>
+							<span className="text-sm font-bold text-secondary-900 ml-auto tabular-nums">
+								{percent}%
+							</span>
+						</div>
+					);
+				})}
+			</div>
 		</BaseCard>
 	);
 }

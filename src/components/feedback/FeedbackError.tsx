@@ -16,13 +16,17 @@ export default function FeedbackError({
 	onRetry,
 }: FeedbackErrorProps) {
 	return (
-		<div className="flex flex-col items-center justify-center py-8 text-center">
-			<div className="flex items-center justify-center w-12 h-12 mb-4 bg-red-100 rounded-full">
+		<div
+			className="flex flex-col items-center justify-center py-10 text-center"
+			role="alert"
+		>
+			<div className="flex items-center justify-center w-14 h-14 mb-4 bg-error-50 rounded-full">
 				<svg
-					className="w-6 h-6 text-red-600"
+					className="w-7 h-7 text-error-600"
 					fill="none"
 					stroke="currentColor"
 					viewBox="0 0 24 24"
+					aria-hidden="true"
 				>
 					<path
 						strokeLinecap="round"
@@ -32,9 +36,9 @@ export default function FeedbackError({
 					/>
 				</svg>
 			</div>
-			<h3 className="text-lg font-medium text-gray-900 mb-1">{title}</h3>
+			<h3 className="text-lg font-semibold text-secondary-900 mb-1">{title}</h3>
 			{message && (
-				<p className="text-sm text-gray-500 mb-4">{message}</p>
+				<p className="text-sm text-secondary-400 mb-4">{message}</p>
 			)}
 			{retryable && onRetry && (
 				<BaseButton variant="secondary" size="sm" onClick={onRetry}>

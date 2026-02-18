@@ -52,21 +52,21 @@ export default function BaseModal({
 
 	return createPortal(
 		<div
-			className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 animate-fadeIn"
+			className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-secondary-900/70 backdrop-blur-sm supports-[backdrop-filter]:bg-secondary-900/60 animate-fadeIn"
 			onClick={handleBackdropClick}
 		>
 			<div
-				className={`relative w-full bg-white rounded-xl shadow-xl animate-scaleIn ${sizeClasses[size]}`}
+				className={`relative w-full bg-surface-raised rounded-2xl shadow-modal animate-slideUp ${sizeClasses[size]}`}
 			>
 				{/* Header */}
 				{title && (
-					<div className="flex items-center justify-between px-6 py-4 border-b">
+					<div className="flex items-center justify-between px-6 py-4 border-b border-secondary-100">
 						<h3 className="text-lg font-semibold text-gray-900">
 							{title}
 						</h3>
 						<button
 							type="button"
-							className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+							className="p-1.5 rounded-lg text-secondary-400 hover:text-secondary-600 hover:bg-secondary-50 transition-interactive focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2"
 							aria-label="닫기"
 							onClick={onClose}
 						>
@@ -75,6 +75,7 @@ export default function BaseModal({
 								fill="none"
 								stroke="currentColor"
 								viewBox="0 0 24 24"
+								aria-hidden="true"
 							>
 								<path
 									strokeLinecap="round"
@@ -92,7 +93,7 @@ export default function BaseModal({
 
 				{/* Footer */}
 				{footer && (
-					<div className="px-6 py-4 border-t bg-gray-50 rounded-b-xl">
+					<div className="px-6 py-4 border-t border-secondary-100 bg-surface-subtle rounded-b-2xl">
 						{footer}
 					</div>
 				)}

@@ -2,6 +2,195 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════════════════
+ * CSS Custom Properties (Design Tokens)
+ * Enables dynamic style access outside of Tailwind classes.
+ * These mirror the Tailwind config values as a single source of truth.
+ * ═══════════════════════════════════════════════════════════════ */
+
+:root {
+	/* Brand */
+	--color-primary: #4F46E5;
+	--color-primary-light: #818CF8;
+	--color-primary-dark: #4338CA;
+	--color-primary-50: #EEF2FF;
+	--color-primary-100: #E0E7FF;
+	--color-primary-500: #6366F1;
+
+	/* Secondary */
+	--color-secondary: #64748B;
+	--color-secondary-light: #94A3B8;
+	--color-secondary-dark: #475569;
+
+	/* Accent */
+	--color-accent: #14B8A6;
+	--color-accent-light: #5EEAD4;
+	--color-accent-dark: #0D9488;
+
+	/* Semantic */
+	--color-success: #22C55E;
+	--color-warning: #F59E0B;
+	--color-error: #EF4444;
+	--color-info: #3B82F6;
+
+	/* Category */
+	--color-salary: #4CAF50;
+	--color-savings: #2196F3;
+	--color-stock: #FF9800;
+	--color-crypto: #9C27B0;
+
+	/* Surfaces */
+	--color-surface: #FFFFFF;
+	--color-surface-subtle: #F8FAFC;
+	--color-surface-overlay: rgba(0, 0, 0, 0.5);
+
+	/* Background */
+	--color-bg: #F8FAFC;
+	--color-bg-warm: #FAFAF9;
+
+	/* Text */
+	--color-text-primary: #111827;
+	--color-text-secondary: #4B5563;
+	--color-text-tertiary: #6B7280;
+	--color-text-muted: #9CA3AF;
+
+	/* Borders */
+	--color-border: #E5E7EB;
+	--color-border-light: #F3F4F6;
+
+	/* Shadows (for use in JS/dynamic styles) */
+	--shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+	--shadow-card-hover: 0 4px 12px -2px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+	--shadow-modal: 0 24px 48px -12px rgba(0, 0, 0, 0.15), 0 12px 24px -8px rgba(0, 0, 0, 0.08);
+
+	/* Spacing */
+	--space-page-x: 1rem;
+	--content-max-width: 56rem; /* max-w-4xl = 896px */
+
+	/* Radius */
+	--radius-card: 0.75rem;
+	--radius-button: 0.5rem;
+	--radius-modal: 0.75rem;
+
+	/* Transitions */
+	--duration-fast: 150ms;
+	--duration-normal: 200ms;
+	--duration-slow: 300ms;
+	--ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+	--ease-snappy: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (min-width: 640px) {
+	:root {
+		--space-page-x: 1.5rem;
+	}
+}
+
+@media (min-width: 1024px) {
+	:root {
+		--space-page-x: 2rem;
+	}
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * Base Layer — Global resets and defaults
+ * ═══════════════════════════════════════════════════════════════ */
+
+@layer base {
+	/* Smooth rendering for Korean text */
+	html {
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		text-rendering: optimizeLegibility;
+	}
+
+	body {
+		color: var(--color-text-primary);
+		background-color: var(--color-bg);
+	}
+
+	/* Subtle warm background gradient for the app shell */
+	body::before {
+		content: "";
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 40vh;
+		background: linear-gradient(
+			180deg,
+			rgba(238, 242, 255, 0.5) 0%,
+			rgba(248, 250, 252, 0) 100%
+		);
+		pointer-events: none;
+		z-index: -1;
+	}
+
+	/* Selection color matching brand */
+	::selection {
+		background-color: var(--color-primary-100);
+		color: var(--color-primary-dark);
+	}
+
+	/* Focus visible for keyboard users */
+	:focus-visible {
+		outline: 2px solid var(--color-primary);
+		outline-offset: 2px;
+	}
+
+	/* Number inputs — hide spin buttons for cleaner look */
+	input[type="number"]::-webkit-inner-spin-button,
+	input[type="number"]::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+	input[type="number"] {
+		-moz-appearance: textfield;
+	}
+
+	/* Scrollbar — Subtle, non-intrusive */
+	* {
+		scrollbar-width: thin;
+		scrollbar-color: var(--color-border) transparent;
+	}
+
+	*::-webkit-scrollbar {
+		width: 6px;
+		height: 6px;
+	}
+
+	*::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	*::-webkit-scrollbar-thumb {
+		background-color: var(--color-border);
+		border-radius: 3px;
+	}
+
+	*::-webkit-scrollbar-thumb:hover {
+		background-color: var(--color-text-muted);
+	}
+
+	/* Reduce motion for users who prefer it */
+	@media (prefers-reduced-motion: reduce) {
+		*,
+		*::before,
+		*::after {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
+		}
+	}
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * Keyframe Animations
+ * ═══════════════════════════════════════════════════════════════ */
+
+/* Existing — preserved for backward compatibility */
 @keyframes fadeIn {
 	from {
 		opacity: 0;
@@ -22,10 +211,154 @@
 	}
 }
 
+/* New — slideUp for bottom sheets, toasts, cards entering */
+@keyframes slideUp {
+	from {
+		transform: translateY(8px);
+		opacity: 0;
+	}
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+/* New — slideDown for dropdowns, notifications entering */
+@keyframes slideDown {
+	from {
+		transform: translateY(-8px);
+		opacity: 0;
+	}
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+/* New — fadeInUp for page-level content, hero sections */
+@keyframes fadeInUp {
+	from {
+		transform: translateY(16px);
+		opacity: 0;
+	}
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+/* New — shimmer for skeleton loading states */
+@keyframes shimmer {
+	0% {
+		background-position: -200% 0;
+	}
+	100% {
+		background-position: 200% 0;
+	}
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * Animation Utility Classes
+ * ═══════════════════════════════════════════════════════════════ */
+
+/* Existing — preserved */
 .animate-fadeIn {
 	animation: fadeIn 0.2s ease;
 }
 
 .animate-scaleIn {
 	animation: scaleIn 0.2s ease;
+}
+
+/* New animation utilities */
+.animate-slideUp {
+	animation: slideUp 0.25s ease-out;
+}
+
+.animate-slideDown {
+	animation: slideDown 0.25s ease-out;
+}
+
+.animate-fadeInUp {
+	animation: fadeInUp 0.3s ease-out;
+}
+
+.animate-shimmer {
+	background: linear-gradient(
+		90deg,
+		var(--color-border-light) 25%,
+		var(--color-border) 50%,
+		var(--color-border-light) 75%
+	);
+	background-size: 200% 100%;
+	animation: shimmer 1.5s ease-in-out infinite;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * Component Utilities
+ * Reusable patterns composed as utility classes.
+ * ═══════════════════════════════════════════════════════════════ */
+
+@layer utilities {
+	/* Smooth transitions for interactive elements */
+	.transition-interactive {
+		transition-property: color, background-color, border-color, box-shadow, transform;
+		transition-duration: var(--duration-normal);
+		transition-timing-function: var(--ease-smooth);
+	}
+
+	/* Card hover lift effect */
+	.hover-lift {
+		transition: box-shadow var(--duration-normal) var(--ease-smooth),
+		            transform var(--duration-normal) var(--ease-smooth);
+	}
+	.hover-lift:hover {
+		box-shadow: var(--shadow-card-hover);
+		transform: translateY(-1px);
+	}
+
+	/* Skeleton loading placeholder */
+	.skeleton {
+		background: linear-gradient(
+			90deg,
+			var(--color-border-light) 25%,
+			var(--color-border) 50%,
+			var(--color-border-light) 75%
+		);
+		background-size: 200% 100%;
+		animation: shimmer 1.5s ease-in-out infinite;
+		border-radius: var(--radius-button);
+	}
+
+	/* Staggered animation delays for list items */
+	.stagger-1 { animation-delay: 50ms; animation-fill-mode: both; }
+	.stagger-2 { animation-delay: 100ms; animation-fill-mode: both; }
+	.stagger-3 { animation-delay: 150ms; animation-fill-mode: both; }
+	.stagger-4 { animation-delay: 200ms; animation-fill-mode: both; }
+	.stagger-5 { animation-delay: 250ms; animation-fill-mode: both; }
+
+	/* Hide scrollbar while still allowing scroll */
+	.scrollbar-hidden {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+	.scrollbar-hidden::-webkit-scrollbar {
+		display: none;
+	}
+
+	/* Truncate with ellipsis — multi-line version */
+	.line-clamp-2 {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+	.line-clamp-3 {
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
 }

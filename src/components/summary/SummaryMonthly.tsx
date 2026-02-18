@@ -27,43 +27,49 @@ export default function SummaryMonthly({
 	});
 
 	return (
-		<BaseCard className="space-y-4">
+		<BaseCard className="space-y-5">
+			{/* Header */}
 			<div className="flex items-center justify-between">
-				<h2 className="text-lg font-semibold text-gray-900">
+				<h2 className="text-lg font-semibold text-secondary-900">
 					이번 달 저축
 				</h2>
-				<span className="text-sm text-gray-500">
+				<span className="text-sm text-secondary-400">
 					{formatMonthKR(currentMonth)}
 				</span>
 			</div>
 
-			<div className="text-3xl font-bold text-blue-600">
+			{/* Monthly total in brand color */}
+			<div className="text-3xl font-bold text-primary tracking-tight">
 				{formatKRW(summary.total)}
 			</div>
 
-			<div className="space-y-2">
-				{categoryAmounts.map((item) => (
-					<div
-						key={item.category.id}
-						className="flex items-center justify-between"
-					>
-						<div className="flex items-center gap-2">
-							<div
-								className="w-2 h-2 rounded-full"
-								style={{
-									backgroundColor: item.category.color,
-								}}
-							/>
-							<span className="text-sm text-gray-600">
-								{item.category.name}
+			{/* Category breakdown list */}
+			{categoryAmounts.length > 0 && (
+				<div className="space-y-3">
+					{categoryAmounts.map((item) => (
+						<div
+							key={item.category.id}
+							className="flex items-center justify-between py-1"
+						>
+							<div className="flex items-center gap-2.5">
+								<div
+									className="w-2.5 h-2.5 rounded-full shrink-0"
+									style={{
+										backgroundColor: item.category.color,
+									}}
+									aria-hidden="true"
+								/>
+								<span className="text-sm text-secondary-600">
+									{item.category.name}
+								</span>
+							</div>
+							<span className="text-sm font-bold text-secondary-900">
+								{formatCompact(item.amount)}
 							</span>
 						</div>
-						<span className="text-sm font-medium text-gray-900">
-							{formatCompact(item.amount)}
-						</span>
-					</div>
-				))}
-			</div>
+					))}
+				</div>
+			)}
 		</BaseCard>
 	);
 }

@@ -23,6 +23,7 @@ export default function BaseSelect({
 	children,
 }: BaseSelectProps) {
 	const selectId = useId();
+	const errorId = useId();
 
 	function handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
 		const val = event.target.value;
@@ -39,23 +40,48 @@ export default function BaseSelect({
 			{label && (
 				<label
 					htmlFor={selectId}
-					className="block text-sm font-medium text-gray-700 mb-1"
+					className="block text-sm font-medium text-secondary-700 mb-1.5"
 				>
 					{label}
-					{required && <span className="text-red-500"> *</span>}
+					{required && <span className="text-error-500"> *</span>}
 				</label>
 			)}
-			<select
-				id={selectId}
-				value={value ?? ""}
-				disabled={disabled}
-				required={required}
-				className={`w-full px-4 py-2 border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed appearance-none bg-white bg-[url("data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20fill='none'%20viewBox='0%200%2020%2020'%3e%3cpath%20stroke='%236b7280'%20stroke-linecap='round'%20stroke-linejoin='round'%20stroke-width='1.5'%20d='M6%208l4%204%204-4'/%3e%3c/svg%3e")] bg-[position:right_0.5rem_center] bg-[size:1.5em_1.5em] bg-no-repeat pr-10 ${error ? "border-red-500 focus:ring-red-500" : "border-gray-300"}`}
-				onChange={handleChange}
-			>
-				{children}
-			</select>
-			{error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+			<div className="relative">
+				<select
+					id={selectId}
+					value={value ?? ""}
+					disabled={disabled}
+					required={required}
+					aria-describedby={error ? errorId : undefined}
+					aria-invalid={error ? "true" : undefined}
+					className={`w-full px-4 py-2.5 border rounded-xl transition-interactive focus:outline-none focus:ring-2 focus:border-transparent appearance-none bg-white pr-10 disabled:bg-secondary-50 disabled:text-secondary-400 disabled:cursor-not-allowed ${error ? "border-error-500 focus:ring-error-500 bg-error-50/50" : "border-secondary-200 focus:ring-primary-400 hover:border-secondary-300"}`}
+					onChange={handleChange}
+				>
+					{children}
+				</select>
+				<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+					<svg
+						className="h-4.5 w-4.5 text-secondary-400"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 20 20"
+						aria-hidden="true"
+					>
+						<path
+							stroke="currentColor"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth="1.5"
+							d="M6 8l4 4 4-4"
+						/>
+					</svg>
+				</div>
+			</div>
+			{error && (
+				<p id={errorId} className="mt-1.5 text-sm text-error-600">
+					{error}
+				</p>
+			)}
 		</div>
 	);
 }

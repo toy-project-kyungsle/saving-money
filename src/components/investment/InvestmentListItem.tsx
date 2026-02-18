@@ -19,10 +19,10 @@ export default function InvestmentListItem({
 	const categoryColor = investment.category?.color || "#6B7280";
 
 	return (
-		<div className="flex items-center justify-between py-3 hover:bg-gray-50 -mx-2 px-2 rounded-lg group">
+		<div className="flex items-center justify-between py-3 hover:bg-surface-subtle -mx-2 px-2 rounded-lg transition-colors duration-200 group">
 			<div className="flex items-center gap-3 min-w-0">
 				<div
-					className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+					className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
 					style={{ backgroundColor: categoryColor + "20" }}
 				>
 					<div
@@ -32,15 +32,15 @@ export default function InvestmentListItem({
 				</div>
 				<div className="min-w-0">
 					<div className="flex items-center gap-2">
-						<span className="font-medium text-gray-900">
+						<span className="font-medium text-secondary-900">
 							{categoryName}
 						</span>
-						<span className="text-sm text-gray-500">
+						<span className="text-xs text-secondary-400">
 							{formatDateKR(investment.transaction_date)}
 						</span>
 					</div>
 					{investment.description && (
-						<p className="text-sm text-gray-500 truncate">
+						<p className="text-sm text-secondary-400 truncate">
 							{investment.description}
 						</p>
 					)}
@@ -48,20 +48,22 @@ export default function InvestmentListItem({
 			</div>
 
 			<div className="flex items-center gap-3">
-				<span className="font-semibold text-gray-900 whitespace-nowrap">
+				<span className="font-bold text-secondary-900 tabular-nums whitespace-nowrap">
 					{formatKRW(investment.amount)}
 				</span>
-				<div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+				<div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200">
 					<button
 						type="button"
-						className="p-1.5 text-gray-400 hover:text-gray-600 rounded"
+						className="p-1.5 text-secondary-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors duration-200"
 						onClick={onEdit}
+						aria-label="수정"
 					>
 						<svg
 							className="w-4 h-4"
 							fill="none"
 							stroke="currentColor"
 							viewBox="0 0 24 24"
+							aria-hidden="true"
 						>
 							<path
 								strokeLinecap="round"
@@ -73,14 +75,16 @@ export default function InvestmentListItem({
 					</button>
 					<button
 						type="button"
-						className="p-1.5 text-gray-400 hover:text-red-600 rounded"
+						className="p-1.5 text-secondary-400 hover:text-error-600 hover:bg-error-50 rounded-lg transition-colors duration-200"
 						onClick={onDelete}
+						aria-label="삭제"
 					>
 						<svg
 							className="w-4 h-4"
 							fill="none"
 							stroke="currentColor"
 							viewBox="0 0 24 24"
+							aria-hidden="true"
 						>
 							<path
 								strokeLinecap="round"

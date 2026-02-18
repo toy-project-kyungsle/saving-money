@@ -54,7 +54,7 @@ export default function InvestmentEditModal({
 		<BaseModal open={open} onClose={onClose} title="투자 수정">
 			<form className="space-y-4" onSubmit={handleSubmit}>
 				<div>
-					<label className="block text-sm font-medium text-gray-700 mb-1">
+					<label className="block text-sm font-medium text-secondary-700 mb-1">
 						카테고리
 					</label>
 					<BaseSelect
@@ -71,7 +71,7 @@ export default function InvestmentEditModal({
 				</div>
 
 				<div>
-					<label className="block text-sm font-medium text-gray-700 mb-1">
+					<label className="block text-sm font-medium text-secondary-700 mb-1">
 						금액 (원)
 					</label>
 					<BaseInput
@@ -86,7 +86,7 @@ export default function InvestmentEditModal({
 				</div>
 
 				<div>
-					<label className="block text-sm font-medium text-gray-700 mb-1">
+					<label className="block text-sm font-medium text-secondary-700 mb-1">
 						거래일
 					</label>
 					<BaseInput
@@ -98,7 +98,7 @@ export default function InvestmentEditModal({
 				</div>
 
 				<div>
-					<label className="block text-sm font-medium text-gray-700 mb-1">
+					<label className="block text-sm font-medium text-secondary-700 mb-1">
 						메모 (선택)
 					</label>
 					<BaseInput
