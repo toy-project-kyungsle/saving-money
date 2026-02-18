@@ -7,13 +7,17 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCategories } from "@/hooks/useCategories";
 import { useSavings } from "@/hooks/useSavings";
 import { usePortfolio } from "@/hooks/usePortfolio";
+import { useToast } from "@/components/feedback/FeedbackToast";
+import { getCurrentMonth } from "@/lib/date";
 import DefaultLayout from "@/components/layout/DefaultLayout";
 import BaseButton from "@/components/base/BaseButton";
 import BaseCard from "@/components/base/BaseCard";
 import FeedbackError from "@/components/feedback/FeedbackError";
 import FeedbackLoading from "@/components/feedback/FeedbackLoading";
 import SummaryTotal from "@/components/summary/SummaryTotal";
+import SummaryMonthly from "@/components/summary/SummaryMonthly";
 import ChartCategoryPie from "@/components/chart/ChartCategoryPie";
+import ChartMonthlyBar from "@/components/chart/ChartMonthlyBar";
 import PortfolioTargetTable from "@/components/portfolio/PortfolioTargetTable";
 import PortfolioSummaryCard from "@/components/portfolio/PortfolioSummaryCard";
 import SavingList from "@/components/saving/SavingList";
@@ -25,6 +29,7 @@ import CategoryManagerModal from "@/components/category/CategoryManagerModal";
 export default function DashboardPage() {
 	const router = useRouter();
 	const { isAuthenticated, initialized } = useAuth();
+	const showToast = useToast();
 
 	const {
 		categories,
@@ -65,15 +70,17 @@ export default function DashboardPage() {
 		null,
 	);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [modalError, setModalError] = useState("");
+	const [categoryModalError, setCategoryModalError] = useState("");
 
-	// Auth guard — redirect to login if not authenticated
+	// Auth guard
 	useEffect(() => {
 		if (initialized && !isAuthenticated) {
 			router.push("/login");
 		}
 	}, [initialized, isAuthenticated, router]);
 
-	// Fetch data on mount — sequential flow matching original Vue onMounted
+	// Fetch data on mount
 	const [dataLoaded, setDataLoaded] = useState(false);
 	useEffect(() => {
 		if (!isAuthenticated || dataLoaded) return;
@@ -89,24 +96,50 @@ export default function DashboardPage() {
 		loadData();
 	}, [isAuthenticated, dataLoaded, fetchCategories, initDefaultCategories, fetchSavings]);
 
+	// Clear modal error on close
+	function clearAndCloseAddModal() {
+		setShowAddModal(false);
+		setModalError("");
+	}
+	function clearAndCloseEditModal() {
+		setShowEditModal(false);
+		setSelectedSaving(null);
+		setModalError("");
+	}
+	function clearAndCloseDeleteModal() {
+		setShowDeleteConfirm(false);
+		setSelectedSaving(null);
+	}
+	function clearAndCloseCategoryModal() {
+		setShowCategoryModal(false);
+		setSelectedCategory(null);
+		setCategoryModalError("");
+	}
+
 	// Add saving
 	const handleAddSaving = useCallback(
 		async (data: SavingInput) => {
 			setIsSubmitting(true);
+			setModalError("");
 			const result = await addSaving(data);
 			setIsSubmitting(false);
 
 			if (result.success) {
 				setShowAddModal(false);
+				setModalError("");
+				showToast("success", "저축이 추가되었어요");
+			} else {
+				setModalError(result.error?.message || "저축 추가에 실패했어요");
 			}
 		},
-		[addSaving],
+		[addSaving, showToast],
 	);
 
 	// Edit saving
 	const openEditModal = useCallback((saving: Saving) => {
 		setSelectedSaving(saving);
 		setShowEditModal(true);
+		setModalError("");
 	}, []);
 
 	const handleEditSaving = useCallback(
@@ -114,15 +147,20 @@ export default function DashboardPage() {
 			if (!selectedSaving) return;
 
 			setIsSubmitting(true);
+			setModalError("");
 			const result = await updateSaving(selectedSaving.id, data);
 			setIsSubmitting(false);
 
 			if (result.success) {
 				setShowEditModal(false);
 				setSelectedSaving(null);
+				setModalError("");
+				showToast("success", "수정되었어요");
+			} else {
+				setModalError(result.error?.message || "수정에 실패했어요");
 			}
 		},
-		[selectedSaving, updateSaving],
+		[selectedSaving, updateSaving, showToast],
 	);
 
 	// Delete saving
@@ -141,41 +179,62 @@ export default function DashboardPage() {
 		if (result.success) {
 			setShowDeleteConfirm(false);
 			setSelectedSaving(null);
+			showToast("success", "삭제되었어요");
+		} else {
+			showToast("error", "삭제에 실패했어요");
 		}
-	}, [selectedSaving, deleteSaving]);
+	}, [selectedSaving, deleteSaving, showToast]);
 
 	// Category management
 	const openCategoryModal = useCallback((category?: Category) => {
 		setSelectedCategory(category || null);
 		setShowCategoryModal(true);
+		setCategoryModalError("");
 	}, []);
 
 	const handleSaveCategory = useCallback(
 		async (data: CategoryInput) => {
 			setIsSubmitting(true);
+			setCategoryModalError("");
 
+			let result;
 			if (selectedCategory) {
-				await updateCategory(selectedCategory.id, data);
+				result = await updateCategory(selectedCategory.id, data);
 			} else {
-				await addCategory(data);
+				result = await addCategory(data);
 			}
 
 			setIsSubmitting(false);
-			setShowCategoryModal(false);
-			setSelectedCategory(null);
+
+			if (result.success) {
+				setShowCategoryModal(false);
+				setSelectedCategory(null);
+				setCategoryModalError("");
+				showToast("success", selectedCategory ? "카테고리가 수정되었어요" : "카테고리가 추가되었어요");
+			} else {
+				setCategoryModalError(result.error?.message || "카테고리 저장에 실패했어요");
+			}
 		},
-		[selectedCategory, updateCategory, addCategory],
+		[selectedCategory, updateCategory, addCategory, showToast],
 	);
 
 	const handleDeleteCategory = useCallback(
 		async (id: number) => {
 			setIsSubmitting(true);
-			await deleteCategory(id);
+			setCategoryModalError("");
+			const result = await deleteCategory(id);
 			setIsSubmitting(false);
-			setShowCategoryModal(false);
-			setSelectedCategory(null);
+
+			if (result.success) {
+				setShowCategoryModal(false);
+				setSelectedCategory(null);
+				setCategoryModalError("");
+				showToast("success", "카테고리가 삭제되었어요");
+			} else {
+				setCategoryModalError(result.error?.message || "카테고리 삭제에 실패했어요");
+			}
 		},
-		[deleteCategory],
+		[deleteCategory, showToast],
 	);
 
 	const loading = categoriesLoading || savingsLoading;
@@ -184,6 +243,19 @@ export default function DashboardPage() {
 		() => totalSummary.byCategory.filter((c) => c.total > 0),
 		[totalSummary.byCategory],
 	);
+
+	// Monthly summary for current month
+	const currentMonthSummary = useMemo(() => {
+		const currentMonth = getCurrentMonth();
+		return totalSummary.byMonth.find((m) => m.month === currentMonth) || {
+			month: currentMonth,
+			total: 0,
+			byCategory: new Map<number, number>(),
+		};
+	}, [totalSummary.byMonth]);
+
+	// Show portfolio only when investment categories exist
+	const hasInvestmentCategories = investmentCategories.length > 0;
 
 	// Show loading if auth not initialized
 	if (!initialized) {
@@ -221,7 +293,7 @@ export default function DashboardPage() {
 							size="sm"
 							onClick={() => openCategoryModal()}
 						>
-							카테고리 추가
+							카테고리 관리
 						</BaseButton>
 						<BaseButton
 							size="sm"
@@ -242,7 +314,7 @@ export default function DashboardPage() {
 
 				{/* Loading state */}
 				{!error && loading && savings.length === 0 && (
-					<div className="py-12">
+					<div className="py-12" aria-busy="true">
 						<FeedbackLoading text="데이터를 불러오는 중..." />
 					</div>
 				)}
@@ -250,34 +322,19 @@ export default function DashboardPage() {
 				{/* Main content */}
 				{!error && !(loading && savings.length === 0) && (
 					<div className="space-y-8 animate-fadeInUp">
-						{/* Summary cards */}
+						{/* Section 1: Summary cards (total + this month) */}
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 							<SummaryTotal
 								total={totalSummary.total}
 								byCategory={totalSummary.byCategory}
 							/>
-							<ChartCategoryPie data={categoryBreakdown} />
+							<SummaryMonthly
+								summary={currentMonthSummary}
+								categories={categories}
+							/>
 						</div>
 
-						{/* Portfolio section */}
-						<section>
-							<h2 className="text-lg font-semibold text-secondary-900 mb-4">
-								포트폴리오
-							</h2>
-							<div className="space-y-4">
-								{/* Portfolio Target Table */}
-								<PortfolioTargetTable
-									allocations={portfolioSummary.allocations}
-									totalTargetPercent={totalTargetPercent}
-									onEditCategory={openCategoryModal}
-								/>
-
-								{/* Portfolio Summary Card (리밸런싱 제안) */}
-								<PortfolioSummaryCard summary={portfolioSummary} />
-							</div>
-						</section>
-
-						{/* Savings list section */}
+						{/* Section 2: Savings list */}
 						<section>
 							<h2 className="text-lg font-semibold text-secondary-900 mb-4">
 								전체 내역
@@ -289,39 +346,65 @@ export default function DashboardPage() {
 									loading={loading}
 									onEdit={openEditModal}
 									onDelete={openDeleteConfirm}
+									onAdd={() => setShowAddModal(true)}
 								/>
 							</BaseCard>
 						</section>
+
+						{/* Section 3: Category chart */}
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<ChartCategoryPie
+								data={categoryBreakdown}
+								onAdd={() => setShowAddModal(true)}
+							/>
+							<ChartMonthlyBar
+								data={totalSummary.byMonth}
+								categories={categories}
+							/>
+						</div>
+
+						{/* Section 4: Portfolio (only when investment categories exist) */}
+						{hasInvestmentCategories && (
+							<section>
+								<h2 className="text-lg font-semibold text-secondary-900 mb-4">
+									포트폴리오
+								</h2>
+								<div className="space-y-4">
+									<PortfolioTargetTable
+										allocations={portfolioSummary.allocations}
+										totalTargetPercent={totalTargetPercent}
+										onEditCategory={openCategoryModal}
+									/>
+									<PortfolioSummaryCard summary={portfolioSummary} />
+								</div>
+							</section>
+						)}
 					</div>
 				)}
 
 				{/* Modals */}
 				<SavingAddModal
 					open={showAddModal}
-					onClose={() => setShowAddModal(false)}
+					onClose={clearAndCloseAddModal}
 					categories={categories}
 					loading={isSubmitting}
+					error={modalError}
 					onSubmit={handleAddSaving}
 				/>
 
 				<SavingEditModal
 					open={showEditModal}
-					onClose={() => {
-						setShowEditModal(false);
-						setSelectedSaving(null);
-					}}
+					onClose={clearAndCloseEditModal}
 					saving={selectedSaving}
 					categories={categories}
 					loading={isSubmitting}
+					error={modalError}
 					onSubmit={handleEditSaving}
 				/>
 
 				<SavingDeleteConfirm
 					open={showDeleteConfirm}
-					onClose={() => {
-						setShowDeleteConfirm(false);
-						setSelectedSaving(null);
-					}}
+					onClose={clearAndCloseDeleteModal}
 					saving={selectedSaving}
 					loading={isSubmitting}
 					onConfirm={handleDeleteSaving}
@@ -329,12 +412,10 @@ export default function DashboardPage() {
 
 				<CategoryManagerModal
 					open={showCategoryModal}
-					onClose={() => {
-						setShowCategoryModal(false);
-						setSelectedCategory(null);
-					}}
+					onClose={clearAndCloseCategoryModal}
 					category={selectedCategory}
 					loading={isSubmitting}
+					error={categoryModalError}
 					onSave={handleSaveCategory}
 					onDelete={handleDeleteCategory}
 				/>

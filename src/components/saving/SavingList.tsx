@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { Category, Saving } from "@/types";
+import BaseButton from "@/components/base/BaseButton";
 import FeedbackEmpty from "@/components/feedback/FeedbackEmpty";
 import FeedbackLoading from "@/components/feedback/FeedbackLoading";
 import SavingListItem from "@/components/saving/SavingListItem";
@@ -12,6 +13,7 @@ interface SavingListProps {
 	loading?: boolean;
 	onEdit: (saving: Saving) => void;
 	onDelete: (saving: Saving) => void;
+	onAdd?: () => void;
 }
 
 export default function SavingList({
@@ -20,6 +22,7 @@ export default function SavingList({
 	loading = false,
 	onEdit,
 	onDelete,
+	onAdd,
 }: SavingListProps) {
 	const [selectedCategoryId, setSelectedCategoryId] = useState<
 		number | "all"
@@ -27,10 +30,11 @@ export default function SavingList({
 
 	const categoryFilterOptions = useMemo(
 		() => [
-			{ value: "all" as const, label: "전체" },
+			{ value: "all" as const, label: "전체", color: undefined },
 			...categories.map((cat) => ({
 				value: cat.id,
 				label: cat.name,
+				color: cat.color,
 			})),
 		],
 		[categories],
@@ -44,6 +48,11 @@ export default function SavingList({
 			(s) => s.category_id === selectedCategoryId,
 		);
 	}, [savings, selectedCategoryId]);
+
+	const selectedCategoryName = useMemo(() => {
+		if (selectedCategoryId === "all") return null;
+		return categories.find((c) => c.id === selectedCategoryId)?.name || "";
+	}, [selectedCategoryId, categories]);
 
 	return (
 		<div className="space-y-4">
@@ -60,7 +69,7 @@ export default function SavingList({
 							type="button"
 							role="tab"
 							aria-selected={selectedCategoryId === option.value}
-							className={`px-4 py-1.5 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200 ${
+							className={`inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200 min-h-[44px] ${
 								selectedCategoryId === option.value
 									? "bg-primary text-white shadow-sm"
 									: "bg-secondary-50 text-secondary-700 hover:bg-secondary-100"
@@ -69,6 +78,13 @@ export default function SavingList({
 								setSelectedCategoryId(option.value)
 							}
 						>
+							{option.color && (
+								<div
+									className="w-2 h-2 rounded-full shrink-0"
+									style={{ backgroundColor: option.color }}
+									aria-hidden="true"
+								/>
+							)}
 							{option.label}
 						</button>
 					))}
@@ -85,8 +101,23 @@ export default function SavingList({
 			{/* Empty state */}
 			{!loading && filteredSavings.length === 0 && (
 				<FeedbackEmpty
-					title="저축 내역이 없습니다"
-					description="새로운 저축을 추가해보세요"
+					title={
+						selectedCategoryName
+							? `${selectedCategoryName} 내역이 없어요`
+							: "아직 저축 내역이 없어요"
+					}
+					description={
+						selectedCategoryName
+							? "다른 카테고리를 선택하거나 새로 추가해보세요"
+							: "첫 번째 저축을 추가해보세요"
+					}
+					action={
+						onAdd ? (
+							<BaseButton size="sm" onClick={onAdd}>
+								+ 새 저축 추가
+							</BaseButton>
+						) : undefined
+					}
 				/>
 			)}
 

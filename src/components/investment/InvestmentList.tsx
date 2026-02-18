@@ -1,6 +1,7 @@
 "use client";
 
 import type { Saving } from "@/types";
+import BaseButton from "@/components/base/BaseButton";
 import FeedbackEmpty from "@/components/feedback/FeedbackEmpty";
 import FeedbackLoading from "@/components/feedback/FeedbackLoading";
 import InvestmentListItem from "@/components/investment/InvestmentListItem";
@@ -10,6 +11,7 @@ interface InvestmentListProps {
 	loading?: boolean;
 	onEdit: (saving: Saving) => void;
 	onDelete: (saving: Saving) => void;
+	onAdd?: () => void;
 }
 
 export default function InvestmentList({
@@ -17,10 +19,11 @@ export default function InvestmentList({
 	loading = false,
 	onEdit,
 	onDelete,
+	onAdd,
 }: InvestmentListProps) {
 	if (loading) {
 		return (
-			<div className="py-8 text-center">
+			<div className="py-8 text-center" aria-busy="true">
 				<FeedbackLoading text="불러오는 중..." />
 			</div>
 		);
@@ -29,8 +32,15 @@ export default function InvestmentList({
 	if (investments.length === 0) {
 		return (
 			<FeedbackEmpty
-				title="투자 내역이 없습니다"
+				title="아직 투자 내역이 없어요"
 				description="새로운 투자를 추가해보세요"
+				action={
+					onAdd ? (
+						<BaseButton size="sm" onClick={onAdd}>
+							+ 새 투자 추가
+						</BaseButton>
+					) : undefined
+				}
 			/>
 		);
 	}

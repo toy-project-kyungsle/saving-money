@@ -1,5 +1,7 @@
 "use client";
 
+import BaseButton from "@/components/base/BaseButton";
+
 interface ErrorPageProps {
 	error: Error & { digest?: string };
 	reset: () => void;
@@ -7,14 +9,15 @@ interface ErrorPageProps {
 
 export default function ErrorPage({ error, reset }: ErrorPageProps) {
 	return (
-		<div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
-			<div className="text-center">
-				<div className="flex items-center justify-center w-16 h-16 mb-6 bg-red-100 rounded-full mx-auto">
+		<div className="min-h-screen bg-surface-subtle flex flex-col items-center justify-center px-4">
+			<div className="text-center max-w-sm">
+				<div className="flex items-center justify-center w-16 h-16 mb-6 bg-error-50 rounded-full mx-auto">
 					<svg
-						className="w-8 h-8 text-red-600"
+						className="w-8 h-8 text-error-600"
 						fill="none"
 						stroke="currentColor"
 						viewBox="0 0 24 24"
+						aria-hidden="true"
 					>
 						<path
 							strokeLinecap="round"
@@ -25,18 +28,17 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
 					</svg>
 				</div>
 
-				<h1 className="text-4xl font-bold text-gray-900 mb-2">오류</h1>
+				<h1 className="text-2xl font-bold text-secondary-900 mb-2">
+					오류가 발생했어요
+				</h1>
 
-				<p className="text-lg text-gray-600 mb-8">
-					{error.message || "오류가 발생했습니다"}
+				<p className="text-secondary-600 mb-8">
+					{error.message || "예기치 못한 오류가 발생했어요"}
 				</p>
 
-				<button
-					className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-					onClick={reset}
-				>
+				<BaseButton onClick={reset}>
 					다시 시도
-				</button>
+				</BaseButton>
 			</div>
 		</div>
 	);

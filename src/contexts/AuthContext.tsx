@@ -47,12 +47,12 @@ function getAuthErrorMessage(err: unknown): string {
 		code === "over_email_send_rate_limit" ||
 		code.includes("email rate limit")
 	) {
-		return "이메일 전송 횟수를 초과했습니다. 잠시 후 다시 시도해주세요.";
+		return "이메일 전송 횟수를 초과했어요. 잠시 후 다시 시도해주세요.";
 	}
 	if (code === "user_already_exists") {
-		return "이미 가입된 이메일입니다.";
+		return "이미 가입된 이메일이에요.";
 	}
-	return (err as Error).message || "알 수 없는 오류가 발생했습니다.";
+	return (err as Error).message || "알 수 없는 오류가 발생했어요.";
 }
 
 function transformUser(supabaseUser: SupabaseUser | null): User | null {
@@ -157,7 +157,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 					data.user.identities &&
 					data.user.identities.length === 0
 				) {
-					throw new Error("이미 가입된 이메일입니다");
+					throw new Error("이미 가입된 이메일이에요");
 				}
 
 				// 세션이 없으면 이메일 인증이 필요한 상태

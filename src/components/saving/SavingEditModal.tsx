@@ -11,6 +11,7 @@ interface SavingEditModalProps {
 	saving: Saving | null;
 	categories: readonly Category[];
 	loading?: boolean;
+	error?: string;
 	onSubmit: (data: SavingInput) => void;
 }
 
@@ -20,6 +21,7 @@ export default function SavingEditModal({
 	saving,
 	categories,
 	loading = false,
+	error,
 	onSubmit,
 }: SavingEditModalProps) {
 	const initialData = useMemo(() => {
@@ -40,6 +42,8 @@ export default function SavingEditModal({
 					categories={categories}
 					initialData={initialData}
 					loading={loading}
+					submitLabel="수정 완료"
+					error={error}
 					onSubmit={onSubmit}
 					onCancel={onClose}
 				/>

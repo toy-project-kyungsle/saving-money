@@ -1,41 +1,40 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import BaseButton from "@/components/base/BaseButton";
 
 export default function NotFound() {
 	const router = useRouter();
 
 	return (
-		<div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
-			<div className="text-center">
-				<div className="flex items-center justify-center w-16 h-16 mb-6 bg-red-100 rounded-full mx-auto">
+		<div className="min-h-screen bg-surface-subtle flex flex-col items-center justify-center px-4">
+			<div className="text-center max-w-sm">
+				<div className="flex items-center justify-center w-16 h-16 mb-6 bg-primary-50 rounded-full mx-auto">
 					<svg
-						className="w-8 h-8 text-red-600"
+						className="w-8 h-8 text-primary"
 						fill="none"
 						stroke="currentColor"
 						viewBox="0 0 24 24"
+						aria-hidden="true"
 					>
 						<path
 							strokeLinecap="round"
 							strokeLinejoin="round"
 							strokeWidth="2"
-							d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+							d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
 						/>
 					</svg>
 				</div>
 
-				<h1 className="text-4xl font-bold text-gray-900 mb-2">404</h1>
+				<h1 className="text-4xl font-bold text-secondary-900 mb-2">404</h1>
 
-				<p className="text-lg text-gray-600 mb-8">
-					페이지를 찾을 수 없습니다
+				<p className="text-lg text-secondary-600 mb-8">
+					페이지를 찾을 수 없어요
 				</p>
 
-				<button
-					className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-					onClick={() => router.push("/")}
-				>
+				<BaseButton onClick={() => router.push("/")}>
 					홈으로 돌아가기
-				</button>
+				</BaseButton>
 			</div>
 		</div>
 	);

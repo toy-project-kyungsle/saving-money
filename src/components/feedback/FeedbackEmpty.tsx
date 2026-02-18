@@ -13,7 +13,7 @@ const icons = {
 };
 
 export default function FeedbackEmpty({
-	title = "데이터가 없습니다",
+	title = "아직 데이터가 없어요",
 	description,
 	icon = "inbox",
 	action,

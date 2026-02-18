@@ -11,6 +11,8 @@ interface SavingFormProps {
 	categories: readonly Category[];
 	initialData?: Partial<SavingInput & { category_id?: number }>;
 	loading?: boolean;
+	submitLabel?: string;
+	error?: string;
 	onSubmit: (data: SavingInput) => void;
 	onCancel: () => void;
 }
@@ -19,13 +21,17 @@ export default function SavingForm({
 	categories,
 	initialData,
 	loading = false,
+	submitLabel = "저장",
+	error,
 	onSubmit,
 	onCancel,
 }: SavingFormProps) {
 	const [categoryId, setCategoryId] = useState<number | null>(
-		initialData?.category_id || null,
+		initialData?.category_id || categories[0]?.id || null,
 	);
-	const [amount, setAmount] = useState<number>(initialData?.amount || 0);
+	const [amount, setAmount] = useState<string>(
+		initialData?.amount ? String(initialData.amount) : "",
+	);
 	const [transactionDate, setTransactionDate] = useState(
 		initialData?.transaction_date || getToday(),
 	);
@@ -43,7 +49,8 @@ export default function SavingForm({
 			isValid = false;
 		}
 
-		if (!amount || amount <= 0) {
+		const numAmount = Number(amount);
+		if (!amount || numAmount <= 0) {
 			newErrors.amount = "금액을 입력해주세요";
 			isValid = false;
 		}
@@ -58,7 +65,7 @@ export default function SavingForm({
 
 		onSubmit({
 			category_id: categoryId!,
-			amount,
+			amount: Number(amount),
 			transaction_date: transactionDate,
 			description: description || undefined,
 		});
@@ -66,71 +73,58 @@ export default function SavingForm({
 
 	return (
 		<form className="space-y-5" onSubmit={handleSubmit}>
-			<div>
-				<label className="block text-sm font-medium text-secondary-700 mb-1.5">
-					카테고리 <span className="text-error-500">*</span>
-				</label>
-				<BaseSelect
-					value={categoryId}
-					onChange={(v) => setCategoryId(v as number | null)}
-					required
-				>
-					<option value="" disabled>
-						카테고리 선택
+			<BaseSelect
+				label="카테고리"
+				value={categoryId}
+				onChange={(v) => setCategoryId(v as number | null)}
+				required
+				error={errors.category_id}
+			>
+				<option value="" disabled>
+					카테고리 선택
+				</option>
+				{categories.map((cat) => (
+					<option key={cat.id} value={cat.id}>
+						{cat.name}
 					</option>
-					{categories.map((cat) => (
-						<option key={cat.id} value={cat.id}>
-							{cat.name}
-						</option>
-					))}
-				</BaseSelect>
-				{errors.category_id && (
-					<p className="text-sm text-error-600 mt-1.5">
-						{errors.category_id}
-					</p>
-				)}
-			</div>
+				))}
+			</BaseSelect>
 
-			<div>
-				<label className="block text-sm font-medium text-secondary-700 mb-1.5">
-					금액 (원) <span className="text-error-500">*</span>
-				</label>
-				<BaseInput
-					value={amount}
-					onChange={(v) => setAmount(Number(v))}
-					type="number"
-					placeholder="0"
-					required
-				/>
-				{errors.amount && (
-					<p className="text-sm text-error-600 mt-1.5">
-						{errors.amount}
-					</p>
-				)}
-			</div>
+			<BaseInput
+				label="금액 (원)"
+				value={amount}
+				onChange={(v) => setAmount(String(v))}
+				type="number"
+				placeholder="0"
+				required
+				min={1}
+				error={errors.amount}
+			/>
 
-			<div>
-				<label className="block text-sm font-medium text-secondary-700 mb-1.5">
-					날짜
-				</label>
-				<BaseInput
-					value={transactionDate}
-					onChange={(v) => setTransactionDate(String(v))}
-					type="date"
-				/>
-			</div>
+			<BaseInput
+				label="날짜"
+				value={transactionDate}
+				onChange={(v) => setTransactionDate(String(v))}
+				type="date"
+			/>
 
-			<div>
-				<label className="block text-sm font-medium text-secondary-700 mb-1.5">
-					메모
-				</label>
-				<BaseInput
-					value={description}
-					onChange={(v) => setDescription(String(v))}
-					type="text"
-					placeholder="예: 1월 월급"
-				/>
-			</div>
+			<BaseInput
+				label="메모"
+				value={description}
+				onChange={(v) => setDescription(String(v))}
+				type="text"
+				placeholder="예: 1월 월급"
+				maxLength={200}
+			/>
+
+			{error && (
+				<div
+					className="bg-error-50 border border-error-200 text-error-700 rounded-xl p-3 text-sm"
+					role="alert"
+				>
+					{error}
+				</div>
+			)}
 
 			<div className="flex gap-3 pt-6">
 				<BaseButton
@@ -147,7 +141,7 @@ export default function SavingForm({
 					className="flex-1"
 					loading={loading}
 				>
-					저장
+					{submitLabel}
 				</BaseButton>
 			</div>
 		</form>

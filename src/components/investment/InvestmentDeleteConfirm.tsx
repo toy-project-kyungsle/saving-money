@@ -20,13 +20,13 @@ export default function InvestmentDeleteConfirm({
 	loading = false,
 	onConfirm,
 }: InvestmentDeleteConfirmProps) {
-	const categoryName = saving?.category?.name || "Unknown";
+	const categoryName = saving?.category?.name || "알 수 없음";
 
 	return (
-		<BaseModal open={open} onClose={onClose} title="투자 삭제">
+		<BaseModal open={open} onClose={onClose} title="투자 삭제" size="sm">
 			<div className="space-y-4">
 				<p className="text-secondary-600">
-					정말로 이 투자 내역을 삭제하시겠습니까?
+					이 투자 내역을 삭제할까요?
 				</p>
 
 				{saving && (
@@ -48,7 +48,7 @@ export default function InvestmentDeleteConfirm({
 				)}
 
 				<p className="text-sm text-error-600">
-					이 작업은 되돌릴 수 없습니다.
+					삭제하면 되돌릴 수 없어요
 				</p>
 
 				<div className="flex justify-end gap-2 pt-4">

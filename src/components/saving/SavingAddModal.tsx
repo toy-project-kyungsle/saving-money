@@ -9,6 +9,7 @@ interface SavingAddModalProps {
 	onClose: () => void;
 	categories: readonly Category[];
 	loading?: boolean;
+	error?: string;
 	onSubmit: (data: SavingInput) => void;
 }
 
@@ -17,6 +18,7 @@ export default function SavingAddModal({
 	onClose,
 	categories,
 	loading = false,
+	error,
 	onSubmit,
 }: SavingAddModalProps) {
 	return (
@@ -24,6 +26,7 @@ export default function SavingAddModal({
 			<SavingForm
 				categories={categories}
 				loading={loading}
+				error={error}
 				onSubmit={onSubmit}
 				onCancel={onClose}
 			/>

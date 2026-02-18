@@ -1,12 +1,8 @@
 /**
- * Format amount as Korean Won currency
+ * Format amount as Korean Won currency (e.g., "1,234,567원")
  */
 export function formatKRW(amount: number): string {
-	return new Intl.NumberFormat("ko-KR", {
-		style: "currency",
-		currency: "KRW",
-		maximumFractionDigits: 0,
-	}).format(amount);
+	return `${new Intl.NumberFormat("ko-KR").format(amount)}원`;
 }
 
 /**
@@ -25,14 +21,14 @@ export function parseFormattedNumber(value: string): number {
 }
 
 /**
- * Format amount in compact notation (e.g., 1.2억, 500만)
+ * Format amount in compact notation (e.g., "1.2억원", "500만원")
  */
 export function formatCompact(amount: number): string {
 	if (amount >= 100_000_000) {
-		return `${(amount / 100_000_000).toFixed(1)}억`;
+		return `${(amount / 100_000_000).toFixed(1)}억원`;
 	}
 	if (amount >= 10_000) {
-		return `${(amount / 10_000).toFixed(0)}만`;
+		return `${(amount / 10_000).toFixed(0)}만원`;
 	}
-	return formatNumber(amount);
+	return `${formatNumber(amount)}원`;
 }
