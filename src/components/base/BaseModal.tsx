@@ -52,7 +52,7 @@ export default function BaseModal({
 
 	return createPortal(
 		<div
-			className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-secondary-900/60 backdrop-blur-sm animate-fadeIn"
+			className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-secondary-900/70 backdrop-blur-sm supports-[backdrop-filter]:bg-secondary-900/60 animate-fadeIn"
 			onClick={handleBackdropClick}
 		>
 			<div

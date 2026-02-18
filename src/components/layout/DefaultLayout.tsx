@@ -20,7 +20,7 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
 	return (
 		<div className="min-h-screen bg-surface-subtle">
 			{/* Header */}
-			<header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b border-secondary-200/60 shadow-xs">
+			<header className="sticky top-0 z-40 bg-white backdrop-blur-lg supports-[backdrop-filter]:bg-white/80 border-b border-secondary-200/60 shadow-xs">
 				<div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 					<div className="flex items-center justify-between h-15">
 						{/* Logo */}
