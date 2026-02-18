@@ -66,9 +66,7 @@ export default function DashboardPage() {
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 	const [showCategoryModal, setShowCategoryModal] = useState(false);
 	const [selectedSaving, setSelectedSaving] = useState<Saving | null>(null);
-	const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-		null,
-	);
+	const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [modalError, setModalError] = useState("");
 	const [categoryModalError, setCategoryModalError] = useState("");
@@ -96,7 +94,6 @@ export default function DashboardPage() {
 		loadData();
 	}, [isAuthenticated, dataLoaded, fetchCategories, initDefaultCategories, fetchSavings]);
 
-	// Clear modal error on close
 	function clearAndCloseAddModal() {
 		setShowAddModal(false);
 		setModalError("");
@@ -116,14 +113,12 @@ export default function DashboardPage() {
 		setCategoryModalError("");
 	}
 
-	// Add saving
 	const handleAddSaving = useCallback(
 		async (data: SavingInput) => {
 			setIsSubmitting(true);
 			setModalError("");
 			const result = await addSaving(data);
 			setIsSubmitting(false);
-
 			if (result.success) {
 				setShowAddModal(false);
 				setModalError("");
@@ -135,7 +130,6 @@ export default function DashboardPage() {
 		[addSaving, showToast],
 	);
 
-	// Edit saving
 	const openEditModal = useCallback((saving: Saving) => {
 		setSelectedSaving(saving);
 		setShowEditModal(true);
@@ -145,12 +139,10 @@ export default function DashboardPage() {
 	const handleEditSaving = useCallback(
 		async (data: SavingInput) => {
 			if (!selectedSaving) return;
-
 			setIsSubmitting(true);
 			setModalError("");
 			const result = await updateSaving(selectedSaving.id, data);
 			setIsSubmitting(false);
-
 			if (result.success) {
 				setShowEditModal(false);
 				setSelectedSaving(null);
@@ -163,7 +155,6 @@ export default function DashboardPage() {
 		[selectedSaving, updateSaving, showToast],
 	);
 
-	// Delete saving
 	const openDeleteConfirm = useCallback((saving: Saving) => {
 		setSelectedSaving(saving);
 		setShowDeleteConfirm(true);
@@ -171,11 +162,9 @@ export default function DashboardPage() {
 
 	const handleDeleteSaving = useCallback(async () => {
 		if (!selectedSaving) return;
-
 		setIsSubmitting(true);
 		const result = await deleteSaving(selectedSaving.id);
 		setIsSubmitting(false);
-
 		if (result.success) {
 			setShowDeleteConfirm(false);
 			setSelectedSaving(null);
@@ -185,7 +174,6 @@ export default function DashboardPage() {
 		}
 	}, [selectedSaving, deleteSaving, showToast]);
 
-	// Category management
 	const openCategoryModal = useCallback((category?: Category) => {
 		setSelectedCategory(category || null);
 		setShowCategoryModal(true);
@@ -196,16 +184,13 @@ export default function DashboardPage() {
 		async (data: CategoryInput) => {
 			setIsSubmitting(true);
 			setCategoryModalError("");
-
 			let result;
 			if (selectedCategory) {
 				result = await updateCategory(selectedCategory.id, data);
 			} else {
 				result = await addCategory(data);
 			}
-
 			setIsSubmitting(false);
-
 			if (result.success) {
 				setShowCategoryModal(false);
 				setSelectedCategory(null);
@@ -224,7 +209,6 @@ export default function DashboardPage() {
 			setCategoryModalError("");
 			const result = await deleteCategory(id);
 			setIsSubmitting(false);
-
 			if (result.success) {
 				setShowCategoryModal(false);
 				setSelectedCategory(null);
@@ -244,7 +228,6 @@ export default function DashboardPage() {
 		[totalSummary.byCategory],
 	);
 
-	// Monthly summary for current month
 	const currentMonthSummary = useMemo(() => {
 		const currentMonth = getCurrentMonth();
 		return totalSummary.byMonth.find((m) => m.month === currentMonth) || {
@@ -254,10 +237,22 @@ export default function DashboardPage() {
 		};
 	}, [totalSummary.byMonth]);
 
-	// Show portfolio only when investment categories exist
-	const hasInvestmentCategories = investmentCategories.length > 0;
+	const prevMonthSummary = useMemo(() => {
+		const sorted = [...totalSummary.byMonth].sort((a, b) =>
+			b.month.localeCompare(a.month),
+		);
+		const currentMonth = getCurrentMonth();
+		const currentIdx = sorted.findIndex((m) => m.month === currentMonth);
+		return currentIdx >= 0 && sorted[currentIdx + 1]
+			? sorted[currentIdx + 1]
+			: sorted.length >= 2
+				? sorted[1]
+				: null;
+	}, [totalSummary.byMonth]);
 
-	// Show loading if auth not initialized
+	const hasInvestmentCategories = investmentCategories.length > 0;
+	const isFirstTimeUser = dataLoaded && savings.length === 0;
+
 	if (!initialized) {
 		return (
 			<div className="min-h-screen bg-surface-subtle flex items-center justify-center">
@@ -269,7 +264,6 @@ export default function DashboardPage() {
 		);
 	}
 
-	// Don't render dashboard if not authenticated
 	if (!isAuthenticated) {
 		return null;
 	}
@@ -319,19 +313,85 @@ export default function DashboardPage() {
 					</div>
 				)}
 
+				{/* First-time user welcome */}
+				{!error && isFirstTimeUser && !loading && (
+					<div className="animate-fadeInUp">
+						<div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-600 via-primary to-primary-800 text-white p-8 sm:p-10 shadow-lg">
+							<div className="absolute top-0 right-0 w-72 h-72 opacity-10" aria-hidden="true">
+								<svg viewBox="0 0 200 200" fill="none">
+									<circle cx="100" cy="100" r="80" stroke="currentColor" strokeWidth="0.5" />
+									<circle cx="100" cy="100" r="60" stroke="currentColor" strokeWidth="0.5" />
+									<circle cx="100" cy="100" r="40" stroke="currentColor" strokeWidth="0.5" />
+								</svg>
+							</div>
+							<div className="relative space-y-6 max-w-md">
+								<div>
+									<h2 className="text-2xl font-bold mb-2">
+										저축 관리를 시작해볼까요?
+									</h2>
+									<p className="text-white/70 leading-relaxed">
+										매달 저축 내역을 기록하고, 카테고리별로 자산을 관리해보세요. 포트폴리오 분석도 자동으로 해드려요.
+									</p>
+								</div>
+								<div className="flex flex-col sm:flex-row gap-3">
+									<BaseButton
+										className="bg-white text-primary-700 hover:bg-white/90 shadow-md"
+										onClick={() => setShowAddModal(true)}
+									>
+										첫 저축 기록하기
+									</BaseButton>
+									<BaseButton
+										variant="ghost"
+										className="text-white/80 hover:text-white hover:bg-white/10"
+										onClick={() => openCategoryModal()}
+									>
+										카테고리 설정하기
+									</BaseButton>
+								</div>
+								<div className="flex flex-wrap gap-4 sm:gap-6 pt-2 text-sm text-white/50">
+									<div className="flex items-center gap-2">
+										<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+										</svg>
+										카테고리별 분류
+									</div>
+									<div className="flex items-center gap-2">
+										<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+										</svg>
+										월별 추이 분석
+									</div>
+									<div className="flex items-center gap-2">
+										<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+										</svg>
+										포트폴리오 관리
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				)}
+
 				{/* Main content */}
-				{!error && !(loading && savings.length === 0) && (
+				{!error && !(loading && savings.length === 0) && !isFirstTimeUser && (
 					<div className="space-y-8 animate-fadeInUp">
-						{/* Section 1: Summary cards (total + this month) */}
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-							<SummaryTotal
-								total={totalSummary.total}
-								byCategory={totalSummary.byCategory}
-							/>
-							<SummaryMonthly
-								summary={currentMonthSummary}
-								categories={categories}
-							/>
+						{/* Section 1: Hero total (wider) + monthly card */}
+						<div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+							<div className="md:col-span-3">
+								<SummaryTotal
+									total={totalSummary.total}
+									byCategory={totalSummary.byCategory}
+									byMonth={totalSummary.byMonth}
+								/>
+							</div>
+							<div className="md:col-span-2">
+								<SummaryMonthly
+									summary={currentMonthSummary}
+									prevSummary={prevMonthSummary}
+									categories={categories}
+								/>
+							</div>
 						</div>
 
 						{/* Section 2: Savings list */}
@@ -351,19 +411,24 @@ export default function DashboardPage() {
 							</BaseCard>
 						</section>
 
-						{/* Section 3: Category chart */}
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-							<ChartCategoryPie
-								data={categoryBreakdown}
-								onAdd={() => setShowAddModal(true)}
-							/>
-							<ChartMonthlyBar
-								data={totalSummary.byMonth}
-								categories={categories}
-							/>
-						</div>
+						{/* Section 3: Analysis charts */}
+						<section>
+							<h2 className="text-lg font-semibold text-secondary-900 mb-4">
+								분석
+							</h2>
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+								<ChartCategoryPie
+									data={categoryBreakdown}
+									onAdd={() => setShowAddModal(true)}
+								/>
+								<ChartMonthlyBar
+									data={totalSummary.byMonth}
+									categories={categories}
+								/>
+							</div>
+						</section>
 
-						{/* Section 4: Portfolio (only when investment categories exist) */}
+						{/* Section 4: Portfolio */}
 						{hasInvestmentCategories && (
 							<section>
 								<h2 className="text-lg font-semibold text-secondary-900 mb-4">
@@ -413,6 +478,7 @@ export default function DashboardPage() {
 				<CategoryManagerModal
 					open={showCategoryModal}
 					onClose={clearAndCloseCategoryModal}
+					categories={categories}
 					category={selectedCategory}
 					loading={isSubmitting}
 					error={categoryModalError}
